@@ -1,0 +1,165 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  font-size: 1em;
+  -webkit-user-select: none;
+}
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+  background-color: white;
+  color: black;
+}
+section {
+  margin-top: 5px;
+}
+button {
+  background-color: #616161;
+  color: white;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 -3px 5px -1px rgba(0,0,0,0.2),
+    0 -5px 8px rgba(0,0,0,0.14),
+    0 -1px 14px rgba(0,0,0,0.12);
+}
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  height: 100%;
+  min-width: 300px;
+  max-width: 1000px;
+  padding: 10px;
+}
+.main-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  width: 100%;
+}
+.main-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 140px;
+  height: 120px;
+  border-radius: 10px;
+}
+.main-button-duration {
+  position: absolute;
+  bottom: 10px;
+}
+.round-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+}
+.play-icon-container {
+  font-size: 0;
+}
+.play-icon {
+  fill: white;
+  stroke: white;
+}
+.icon-container {
+  position: relative;
+}
+.icon-container svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.icon {
+  fill: none;
+  stroke: white;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.session-params {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.session-params .value {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.session-controls {
+  width: 100%;
+  height: 34px;
+}
+.range-slider {
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+  float: left;
+  text-align: center;
+}
+.range-slider hr {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  top: 2px;
+}
+.range-slider span {
+  position: absolute;
+  height: 4px;
+  top: 10px;
+  background-color: green;
+}
+/* Range input styling */
+/* Thanks to @RemkoBoschker at CodePen.io */
+input[type=range] {
+  -webkit-appearance: none;
+  pointer-events: none;
+  padding: 0;
+  position: absolute;
+  left: -2px;
+  width: 100%;
+  background: none;
+}
+input[type=range]:focus, .range-slider input[type=range]:active {
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  border: none;
+  pointer-events: auto;
+  border-radius: 14px;
+  background-color: green;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+input[type=range]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  pointer-events: auto;
+  border-radius: 14px;
+  background-color: green;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+input[type=range]::-moz-range-track {
+  -moz-appearance: none;
+  background: none;
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="org.supersapiens.achallenge" version="0.1.0" xmlns="http://www.w3.org/ns/widgets"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>Attention Challenge</name>
+  <description>Attention Challenge Meditation App</description>
+  <author email="uvizhe@gmail.com">
+    Alexander Uvizhev
+  </author>
+  <content src="index.html"/>
+  <allow-intent href="http://*/*"/>
+  <allow-intent href="https://*/*"/>
+  <platform name="android">
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="../icons/xxxhdpi.png" />
+    <preference name="AndroidWindowSplashScreenBackground" value="#FFFFFF" />
+
+    <resource-file src="../icons/colors.xml" target="/app/src/main/res/values/colors.xml" />
+
+    <icon background="@color/background" density="mdpi" foreground="../icons/mdpi.png" />
+    <icon background="@color/background" density="hdpi" foreground="../icons/hdpi.png" />
+    <icon background="@color/background" density="xhdpi" foreground="../icons/xhdpi.png" />
+    <icon background="@color/background" density="xxhdpi" foreground="../icons/xxhdpi.png" />
+    <icon background="@color/background" density="xxxhdpi" foreground="../icons/xxxhdpi.png" />
+  </platform>
+  <config-file parent="/manifest" target="AndroidManifest.xml">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  </config-file>
+  <hook src="cordovaBeforePrepare.js" type="before_prepare"/>
+</widget>
