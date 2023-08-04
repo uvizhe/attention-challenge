@@ -166,7 +166,7 @@ impl Component for App {
         html! {
             <main>
                 <section class="session">
-                    <div><h2>{ "Session Parameters [?]" }</h2></div>
+                    <h2>{ "Session Parameters [?]" }</h2>
                     <div class="session-params">
                         <div class="value">{ format!("Delay: {} min", self.delay) }</div>
                         <div class="value">{ format!("Duration: {} min", self.duration) }</div>

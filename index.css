@@ -1,7 +1,6 @@
 * {
   box-sizing: border-box;
   font-family: sans-serif;
-  font-size: 1em;
   -webkit-user-select: none;
 }
 html {
@@ -21,9 +20,7 @@ button {
   color: white;
   cursor: pointer;
   border: none;
-  box-shadow: 0 -3px 5px -1px rgba(0,0,0,0.2),
-    0 -5px 8px rgba(0,0,0,0.14),
-    0 -1px 14px rgba(0,0,0,0.12);
+  box-shadow: 0px 1px 3px 1px #8e8e8e;
 }
 main {
   display: flex;
@@ -33,7 +30,7 @@ main {
   height: 100%;
   min-width: 300px;
   max-width: 1000px;
-  padding: 10px;
+  padding: 16px;
 }
 .main-controls {
   display: flex;
@@ -47,18 +44,21 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 140px;
-  height: 120px;
-  border-radius: 10px;
+  width: 170px;
+  height: 156px;
+  border-radius: 26px;
+  box-shadow: 0px 5px 11px 3px #8e8e8e;
 }
 .main-button-duration {
   position: absolute;
+  font-size: 1.4em;
+  font-weight: 500;
   bottom: 10px;
 }
 .round-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
 }
 .play-icon-container {
   font-size: 0;
@@ -77,11 +77,8 @@ main {
   transform: translate(-50%, -50%);
 }
 .icon {
-  fill: none;
-  stroke: white;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: white;
+  stroke: none;
 }
 .session {
   display: flex;
@@ -94,32 +91,45 @@ main {
   justify-content: space-between;
   width: 100%;
 }
-.session-params .value {
-  margin-left: 10px;
-  margin-right: 10px;
-}
 .session-controls {
   width: 100%;
-  height: 34px;
+  height: 60px;
+  margin-top: 20px;
 }
 .range-slider {
   position: relative;
-  width: 80%;
-  margin-left: 10%;
+  width: 100%;
   float: left;
   text-align: center;
 }
 .range-slider hr {
   position: absolute;
   width: 100%;
-  height: 4px;
-  top: 2px;
+  height: 6px;
+  top: 0px;
+  border: 1px solid #dfab4a;
 }
 .range-slider span {
   position: absolute;
-  height: 4px;
-  top: 10px;
-  background-color: green;
+  height: 6px;
+  top: 8px;
+}
+.passive-session-range {
+  border: 1px solid #dfab4a;
+  border-radius: 3px;
+  box-shadow: inset 0px 0px 3px 0px #dfab4a;
+  height: 6px !important;
+  top: 8px !important;
+}
+.active-session-range {
+  background-color: #dfab4a;
+  box-shadow: 0px 0px 3px 0px #dfab4a;
+}
+.available-session-range {
+  background-color: #8e8e8e;
+  border-radius: 1px;
+  height: 2px !important;
+  top: 10px !important;
 }
 /* Range input styling */
 /* Thanks to @RemkoBoschker at CodePen.io */
@@ -143,10 +153,12 @@ input[type=range]::-webkit-slider-thumb {
   border: none;
   pointer-events: auto;
   border-radius: 14px;
-  background-color: green;
+  background-color: #616161;
   cursor: pointer;
   position: relative;
   z-index: 1;
+  box-shadow: 0px 1px 3px 1px #616161;
+  margin-top: -1px;
 }
 input[type=range]::-moz-range-thumb {
   width: 20px;
@@ -154,10 +166,11 @@ input[type=range]::-moz-range-thumb {
   border: none;
   pointer-events: auto;
   border-radius: 14px;
-  background-color: green;
+  background-color: #616161;
   cursor: pointer;
   position: relative;
   z-index: 1;
+  box-shadow: 0px 1px 3px 0px #616161;
 }
 input[type=range]::-moz-range-track {
   -moz-appearance: none;

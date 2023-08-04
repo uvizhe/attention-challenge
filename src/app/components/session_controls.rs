@@ -36,15 +36,20 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         })
     };
 
-    let left_pos = props.delay * 100 / 30;
-    let right_pos = 100 - props.duration * 100 / 30;
-    let slider_style = format!("left: {}%; right: {}%", left_pos, right_pos);
+    let delay_left: f32 = props.delay as f32 * 100.0 / 30.0 + 0.5;
+    let delay_right: f32 = 100.0 - delay_left;
+    let duration_left: f32 = props.duration as f32 * 100.0 / 30.0;
+    let duration_right: f32 = 100.0 - duration_left;
+    let passive_slider_style = format!("left: 0%; right: {}%", delay_right);
+    let active_slider_style = format!("left: {}%; right: {}%", delay_left, duration_right);
+    let available_slider_style = format!("left: {}%; right: 0%", duration_left);
 
     html! {
         <div class="session-controls">
             <div class="range-slider">
-                <hr />
-                <span style={slider_style}></span>
+                <span class="passive-session-range" style={passive_slider_style}></span>
+                <span class="active-session-range" style={active_slider_style}></span>
+                <span class="available-session-range" style={available_slider_style}></span>
                 <input type="range"
                     ref={delay_input}
                     oninput={on_delay_input}
