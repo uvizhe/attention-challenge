@@ -61,24 +61,25 @@ main {
   border-radius: 21px;
 }
 .play-icon-container {
+  position: relative;
   font-size: 0;
 }
-.play-icon {
-  fill: white;
-  stroke: white;
+.play-icon-container img {
+  width: 70px;
+  height: 70px;
 }
 .icon-container {
   position: relative;
 }
-.icon-container svg {
+.icon-container img {
+  width: 24px;
+  height: 24px;
+}
+.icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-.icon {
-  fill: white;
-  stroke: none;
 }
 .session {
   display: flex;

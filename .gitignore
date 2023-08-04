@@ -4,6 +4,7 @@
 node_modules/
 dist/
 target/
+src-cordova/www/assets
 src-cordova/www/js/attention*
 src-cordova/www/css/index.css
 src-cordova/plugins/

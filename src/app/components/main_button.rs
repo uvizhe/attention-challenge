@@ -19,9 +19,7 @@ pub fn main_button(props: &MainButtonProps) -> Html {
     html! {
         <button class="main-button" onclick={on_click}>
             <div class="play-icon-container">
-                <svg height="60" width="60">
-                    <polygon points="10,0 10,60 56,30" class="play-icon" />
-                </svg>
+                <img class="icon" src="assets/play.svg" />
             </div>
             <div class="main-button-duration">
                 { &props.remaining_time }
