@@ -36,13 +36,21 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         })
     };
 
-    let delay_left: f32 = props.delay as f32 * 100.0 / 30.0 + 0.5;
+    let delay_left: f32 = props.delay as f32 * 100.0 / 30.0;
     let delay_right: f32 = 100.0 - delay_left;
     let duration_left: f32 = props.duration as f32 * 100.0 / 30.0;
     let duration_right: f32 = 100.0 - duration_left;
     let passive_slider_style = format!("left: 0%; right: {}%", delay_right);
     let active_slider_style = format!("left: {}%; right: {}%", delay_left, duration_right);
     let available_slider_style = format!("left: {}%; right: 0%", duration_left);
+    let delay_bell_style = format!("left: {}%", delay_left / 2.0);
+    let mut duration_bell_left = (duration_left + delay_left) / 2.0;
+    // Factor in that range input thumb isn't cenered around its value.
+    duration_bell_left +=
+        if duration_bell_left < 30.0 { 20.0 / duration_bell_left }
+        else if duration_bell_left > 70.0 { -20.0 / (100.0 - duration_bell_left) }
+        else { 0.0 };
+    let duration_bell_style = format!("left: {duration_bell_left}%");
 
     html! {
         <div class="session-controls">
@@ -62,6 +70,12 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
                     max="30"
                     value={props.duration.to_string()}
                 />
+            </div>
+            <div class="range-icons">
+            if props.delay > 1 {
+                <img src="assets/silent.svg" style={delay_bell_style} />
+            }
+                <img src="assets/bell.svg" style={duration_bell_style} />
             </div>
         </div>
     }

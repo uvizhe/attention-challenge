@@ -12,6 +12,8 @@ use components::button::Button;
 use components::main_button::MainButton;
 use components::session_controls::SessionControls;
 
+const MAX_DURATION: usize = 30;
+
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
@@ -134,15 +136,27 @@ impl Component for App {
                 self.interval = Some(interval);
             }
             Msg::OnDelayChange(value) => {
-                if value >= self.duration {
-                    self.delay = self.duration - 1;
+                if value > self.duration - 5 {
+                    if value < MAX_DURATION - 5 {
+                        self.delay = value;
+                        self.duration = value + 5;
+                    } else {
+                        self.delay = MAX_DURATION - 5;
+                        self.duration = MAX_DURATION;
+                    }
                 } else {
                     self.delay = value;
                 }
             }
             Msg::OnDurationChange(value) => {
-                if value <= self.delay {
-                    self.duration = self.delay + 1;
+                if value < self.delay + 5 {
+                    if value > 5 {
+                        self.delay = value - 5;
+                        self.duration = value;
+                    } else {
+                        self.delay = 0;
+                        self.duration = 5;
+                    }
                 } else {
                     self.duration = value;
                 }

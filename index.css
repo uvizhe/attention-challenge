@@ -30,7 +30,7 @@ main {
   height: 100%;
   min-width: 300px;
   max-width: 1000px;
-  padding: 16px;
+  padding: 5%;
 }
 .main-controls {
   display: flex;
@@ -102,6 +102,15 @@ main {
   width: 100%;
   float: left;
   text-align: center;
+}
+.range-icons {
+  position: relative;
+  display: flex;
+  top: 25px;
+}
+.range-icons img {
+  position: absolute;
+  margin-left: -12px;
 }
 .range-slider hr {
   position: absolute;
