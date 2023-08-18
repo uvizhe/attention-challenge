@@ -3,6 +3,8 @@ use yew::prelude::*;
 #[derive(Properties, PartialEq)]
 pub struct ButtonProps {
     pub icon: String,
+    pub alt_icon: String,
+    pub in_session: bool,
     pub on_click: Callback<()>,
 }
 
@@ -15,10 +17,10 @@ pub fn button(props: &ButtonProps) -> Html {
         })
     };
 
-    let icon_file = match props.icon.as_str() {
-        "help" => "assets/help.svg",
-        "settings" => "assets/cog.svg",
-        _ => ""
+    let icon_file = if props.in_session {
+        format!("assets/{}.svg", props.alt_icon)
+    } else {
+        format!("assets/{}.svg", props.icon)
     };
 
     html! {

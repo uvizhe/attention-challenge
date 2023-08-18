@@ -2,11 +2,13 @@ use wasm_bindgen::JsCast;
 use web_sys::{EventTarget, HtmlInputElement};
 use yew::prelude::*;
 
+use crate::app::MAX_DURATION;
+
 #[derive(Properties, PartialEq)]
 pub struct SessionControlsProps {
-    pub disabled: bool,
     pub delay: usize,
     pub duration: usize,
+    pub in_session: bool,
     pub on_delay_change: Callback<usize>,
     pub on_duration_change: Callback<usize>,
 }
@@ -36,9 +38,10 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         })
     };
 
-    let delay_left: f32 = props.delay as f32 * 100.0 / 30.0;
+    let max_duration = MAX_DURATION as f32;
+    let delay_left: f32 = props.delay as f32 * 100.0 / max_duration;
     let delay_right: f32 = 100.0 - delay_left;
-    let duration_left: f32 = props.duration as f32 * 100.0 / 30.0;
+    let duration_left: f32 = props.duration as f32 * 100.0 / max_duration;
     let duration_right: f32 = 100.0 - duration_left;
     let passive_slider_style = format!("left: 0%; right: {}%", delay_right);
     let active_slider_style = format!("left: {}%; right: {}%", delay_left, duration_right);
@@ -47,7 +50,7 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
     let mut duration_bell_left = (duration_left + delay_left) / 2.0;
     // Factor in that range input thumb isn't cenered around its value.
     duration_bell_left +=
-        if duration_bell_left < 30.0 { 20.0 / duration_bell_left }
+        if duration_bell_left < max_duration { 20.0 / duration_bell_left }
         else if duration_bell_left > 70.0 { -20.0 / (100.0 - duration_bell_left) }
         else { 0.0 };
     let duration_bell_style = format!("left: {duration_bell_left}%");
@@ -61,14 +64,16 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
                 <input type="range"
                     ref={delay_input}
                     oninput={on_delay_input}
-                    max="30"
+                    max={MAX_DURATION.to_string()}
                     value={props.delay.to_string()}
+                    disabled={props.in_session}
                 />
                 <input type="range"
                     ref={duration_input}
                     oninput={on_duration_input}
-                    max="30"
+                    max={MAX_DURATION.to_string()}
                     value={props.duration.to_string()}
+                    disabled={props.in_session}
                 />
             </div>
             <div class="range-icons">

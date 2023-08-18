@@ -2,8 +2,9 @@ use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct MainButtonProps {
-    pub is_session_running: bool,
-    pub remaining_time: String,
+    pub in_session: bool,
+    pub duration: usize,
+    pub time_remaining: usize,
     pub on_click: Callback<()>,
 }
 
@@ -16,14 +17,28 @@ pub fn main_button(props: &MainButtonProps) -> Html {
         })
     };
 
+    let duration = || {
+        format!("{} min", props.duration)
+    };
+
+    let remaining_time = || {
+        props.time_remaining.to_string()
+    };
+
     html! {
-        <button class="main-button" onclick={on_click}>
+        <button class="main-button" onclick={on_click} disabled={props.in_session}>
+        if props.in_session {
+            <div class="main-button-timer">
+                { remaining_time() }
+            </div>
+        } else {
             <div class="play-icon-container">
                 <img class="icon" src="assets/play.svg" />
             </div>
             <div class="main-button-duration">
-                { &props.remaining_time }
+                { duration() }
             </div>
+        }
         </button>
     }
 }

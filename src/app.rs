@@ -1,8 +1,9 @@
 use std::time::Duration;
 
+use gloo_console::log;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{JsValue, prelude::*};
 use yew::prelude::*;
 use yew::platform::{spawn_local, time::sleep};
 
@@ -13,6 +14,9 @@ use components::main_button::MainButton;
 use components::session_controls::SessionControls;
 
 const MAX_DURATION: usize = 30;
+const MIN_ACTIVE_SESSION: usize = 5;
+const INITIAL_DELAY: usize = 3;
+const INITIAL_DURATION: usize = 10;
 
 #[wasm_bindgen]
 extern "C" {
@@ -44,41 +48,31 @@ fn is_android() -> bool {
 
 pub enum Msg {
     OnMainButtonPress,
+    OnHelpStopButtonPress,
+    OnSettingsPauseButtonPress,
     OnDelayChange(usize),
     OnDurationChange(usize),
     ReduceTimer,
+    StopSession(StopCause),
     OnAppPause,
     OnAppResume,
 }
 
-/*
-struct Timer {
-    seconds: usize,
-}
-
-impl Reducible for Timer {
-    type Action = ();
-
-    fn reduce(self: Rc<Self>, _action: ()) -> Rc<Self> {
-        let this = Rc::make_mut(&mut self);
-        this.seconds += 1;
-        self
-    }
-}
-*/
-
 pub struct App {
-    // App current state
+    /// App current state
     state: AppState,
-    // Timer Interval
+    /// Timer Interval
     interval: Option<Interval>,
-    // Active session delay
+    /// Active session delay
     delay: usize,
-    // Total session duration
+    /// Total session duration
     duration: usize,
-    // Session time remaining in seconds
+    /// Session is active or not
+    in_session: bool,
+    is_paused: bool,
+    /// Session time remaining in seconds
     time_remaining: usize,
-    // App global event listeners
+    /// App global event listeners
     _app_event_listeners: AppEventListeners,
 }
 
@@ -119,9 +113,11 @@ impl Component for App {
         Self {
             state: AppState::ShowsMain,
             interval: None::<Interval>,
-            delay: 3,
-            duration: 25,
-            time_remaining: 10,
+            delay: INITIAL_DELAY,
+            duration: INITIAL_DURATION,
+            in_session: false,
+            is_paused: false,
+            time_remaining: INITIAL_DURATION,
             _app_event_listeners: listeners,
         }
     }
@@ -130,18 +126,33 @@ impl Component for App {
         match msg {
             Msg::OnMainButtonPress => {
                 let scope = ctx.link().clone();
+                self.in_session = true;
+                self.time_remaining = self.duration;
                 let interval = Interval::new(1_000, move || {
                     scope.send_message(Msg::ReduceTimer);
                 });
                 self.interval = Some(interval);
             }
+            Msg::OnHelpStopButtonPress => {
+                if self.in_session {
+                    let scope = ctx.link().clone();
+                    scope.send_message(Msg::StopSession(StopCause::SessionEnd));
+                } else {
+                }
+            }
+            Msg::OnSettingsPauseButtonPress => {
+                if self.in_session {
+                    self.is_paused = !self.is_paused;
+                } else {
+                }
+            }
             Msg::OnDelayChange(value) => {
-                if value > self.duration - 5 {
-                    if value < MAX_DURATION - 5 {
+                if value > self.duration - MIN_ACTIVE_SESSION {
+                    if value < MAX_DURATION - MIN_ACTIVE_SESSION {
                         self.delay = value;
-                        self.duration = value + 5;
+                        self.duration = value + MIN_ACTIVE_SESSION;
                     } else {
-                        self.delay = MAX_DURATION - 5;
+                        self.delay = MAX_DURATION - MIN_ACTIVE_SESSION;
                         self.duration = MAX_DURATION;
                     }
                 } else {
@@ -149,23 +160,38 @@ impl Component for App {
                 }
             }
             Msg::OnDurationChange(value) => {
-                if value < self.delay + 5 {
-                    if value > 5 {
-                        self.delay = value - 5;
+                if value < self.delay + MIN_ACTIVE_SESSION {
+                    if value > MIN_ACTIVE_SESSION {
+                        self.delay = value - MIN_ACTIVE_SESSION;
                         self.duration = value;
                     } else {
                         self.delay = 0;
-                        self.duration = 5;
+                        self.duration = MIN_ACTIVE_SESSION;
                     }
                 } else {
                     self.duration = value;
                 }
             }
             Msg::ReduceTimer => {
-                self.time_remaining -= 1;
-                if self.time_remaining == 0 {
-                    self.interval = None;
-                    self.time_remaining = 10;
+                if !self.is_paused {
+                    self.time_remaining -= 1;
+                    log!("time_remaining={}", JsValue::from(self.time_remaining));
+                    if self.time_remaining == 0 {
+                        let scope = ctx.link().clone();
+                        scope.send_message(Msg::StopSession(StopCause::SessionEnd));
+                    }
+                }
+            }
+            Msg::StopSession(cause) => {
+                self.interval = None;
+                self.in_session = false;
+                self.is_paused = false;
+                self.time_remaining = self.duration;
+                match cause {
+                    StopCause::SessionEnd => {
+                        // Ring a bell
+                    }
+                    _ => {}
                 }
             }
             Msg::OnAppPause => {
@@ -186,27 +212,37 @@ impl Component for App {
                         <div class="value">{ format!("Duration: {} min", self.duration) }</div>
                     </div>
                     <SessionControls
-                        disabled={false}
                         delay={self.delay}
                         duration={self.duration}
+                        in_session={self.in_session}
                         on_delay_change={ctx.link().callback(|val| Msg::OnDelayChange(val))}
                         on_duration_change={ctx.link().callback(|val| Msg::OnDurationChange(val))}
                     />
                 </section>
                 <section class="main-controls">
                     <Button icon="help"
-                        on_click={ctx.link().callback(|_| Msg::OnMainButtonPress)}
+                        alt_icon="stop"
+                        in_session={self.in_session}
+                        on_click={ctx.link().callback(|_| Msg::OnHelpStopButtonPress)}
                     />
                     <MainButton
-                        is_session_running={false}
-                        remaining_time={format!("{} min", self.time_remaining)}
+                        in_session={self.in_session}
+                        duration={self.duration}
+                        time_remaining={self.time_remaining}
                         on_click={ctx.link().callback(|_| Msg::OnMainButtonPress)}
                     />
                     <Button icon="settings"
-                        on_click={ctx.link().callback(|_| Msg::OnMainButtonPress)}
+                        alt_icon="pause"
+                        in_session={self.in_session}
+                        on_click={ctx.link().callback(|_| Msg::OnSettingsPauseButtonPress)}
                     />
                 </section>
             </main>
         }
     }
+}
+
+enum StopCause {
+    SessionEnd,
+    StopButton,
 }
