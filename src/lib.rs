@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 mod app;
+mod rsg;
 
 use app::App;
 

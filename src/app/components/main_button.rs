@@ -18,7 +18,7 @@ pub fn main_button(props: &MainButtonProps) -> Html {
     };
 
     let duration = || {
-        format!("{} min", props.duration)
+        format!("{} min", props.duration / 60)
     };
 
     let remaining_time = || {

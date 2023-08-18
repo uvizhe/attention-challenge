@@ -12,11 +12,12 @@ mod components;
 use components::button::Button;
 use components::main_button::MainButton;
 use components::session_controls::SessionControls;
+use crate::rsg::generate_random_signals;
 
-const MAX_DURATION: usize = 30;
-const MIN_ACTIVE_SESSION: usize = 5;
-const INITIAL_DELAY: usize = 3;
-const INITIAL_DURATION: usize = 10;
+const MAX_DURATION: usize = 30 * 60;
+const MIN_ACTIVE_SESSION: usize = 5 * 60;
+const INITIAL_DELAY: usize = 3 * 60;
+const INITIAL_DURATION: usize = 10 * 60;
 
 #[wasm_bindgen]
 extern "C" {
@@ -53,7 +54,7 @@ pub enum Msg {
     OnDelayChange(usize),
     OnDurationChange(usize),
     ReduceTimer,
-    StopSession(StopCause),
+    StopSession,
     OnAppPause,
     OnAppResume,
 }
@@ -69,7 +70,10 @@ pub struct App {
     duration: usize,
     /// Session is active or not
     in_session: bool,
+    /// Session is paused or not
     is_paused: bool,
+    /// Vector of timers (in secs) at which a bell should ring
+    signals: Vec<usize>,
     /// Session time remaining in seconds
     time_remaining: usize,
     /// App global event listeners
@@ -117,6 +121,7 @@ impl Component for App {
             duration: INITIAL_DURATION,
             in_session: false,
             is_paused: false,
+            signals: vec![],
             time_remaining: INITIAL_DURATION,
             _app_event_listeners: listeners,
         }
@@ -125,6 +130,14 @@ impl Component for App {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::OnMainButtonPress => {
+                self.signals = generate_random_signals(self.duration - self.delay, self.delay);
+                log!(
+                    JsValue::from(self.signals[0]),
+                    JsValue::from(self.signals[1]),
+                    JsValue::from(self.signals[2]),
+                    JsValue::from(self.signals[3]),
+                    JsValue::from(self.signals[4])
+                );
                 let scope = ctx.link().clone();
                 self.in_session = true;
                 self.time_remaining = self.duration;
@@ -136,7 +149,7 @@ impl Component for App {
             Msg::OnHelpStopButtonPress => {
                 if self.in_session {
                     let scope = ctx.link().clone();
-                    scope.send_message(Msg::StopSession(StopCause::SessionEnd));
+                    scope.send_message(Msg::StopSession);
                 } else {
                 }
             }
@@ -175,24 +188,22 @@ impl Component for App {
             Msg::ReduceTimer => {
                 if !self.is_paused {
                     self.time_remaining -= 1;
-                    log!("time_remaining={}", JsValue::from(self.time_remaining));
+                    let time_elapsed = self.duration - self.time_remaining;
+                    log!(self.time_remaining, time_elapsed);
+                    if self.signals.contains(&time_elapsed) {
+                        log!("DING!");
+                    }
                     if self.time_remaining == 0 {
                         let scope = ctx.link().clone();
-                        scope.send_message(Msg::StopSession(StopCause::SessionEnd));
+                        scope.send_message(Msg::StopSession);
                     }
                 }
             }
-            Msg::StopSession(cause) => {
+            Msg::StopSession => {
                 self.interval = None;
                 self.in_session = false;
                 self.is_paused = false;
                 self.time_remaining = self.duration;
-                match cause {
-                    StopCause::SessionEnd => {
-                        // Ring a bell
-                    }
-                    _ => {}
-                }
             }
             Msg::OnAppPause => {
             }
@@ -208,8 +219,8 @@ impl Component for App {
                 <section class="session">
                     <h2>{ "Session Parameters [?]" }</h2>
                     <div class="session-params">
-                        <div class="value">{ format!("Delay: {} min", self.delay) }</div>
-                        <div class="value">{ format!("Duration: {} min", self.duration) }</div>
+                        <div class="value">{ format!("Delay: {} min", self.delay / 60) }</div>
+                        <div class="value">{ format!("Duration: {} min", self.duration / 60) }</div>
                     </div>
                     <SessionControls
                         delay={self.delay}
@@ -240,9 +251,4 @@ impl Component for App {
             </main>
         }
     }
-}
-
-enum StopCause {
-    SessionEnd,
-    StopButton,
 }

@@ -23,7 +23,7 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         let callback = props.on_delay_change.clone();
         Callback::from(move |_| {
             if let Some(input) = input_ref.cast::<web_sys::HtmlInputElement>() {
-                callback.emit(input.value().parse().unwrap());
+                callback.emit(input.value().parse::<usize>().unwrap() * 60);
             }
         })
     };
@@ -33,15 +33,15 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         let callback = props.on_duration_change.clone();
         Callback::from(move |_| {
             if let Some(input) = input_ref.cast::<web_sys::HtmlInputElement>() {
-                callback.emit(input.value().parse().unwrap());
+                callback.emit(input.value().parse::<usize>().unwrap() * 60);
             }
         })
     };
 
-    let max_duration = MAX_DURATION as f32;
-    let delay_left: f32 = props.delay as f32 * 100.0 / max_duration;
+    let max_duration = MAX_DURATION as f32 / 60.0;
+    let delay_left: f32 = props.delay as f32 / 60.0 * 100.0 / max_duration;
     let delay_right: f32 = 100.0 - delay_left;
-    let duration_left: f32 = props.duration as f32 * 100.0 / max_duration;
+    let duration_left: f32 = props.duration as f32 / 60.0 * 100.0 / max_duration;
     let duration_right: f32 = 100.0 - duration_left;
     let passive_slider_style = format!("left: 0%; right: {}%", delay_right);
     let active_slider_style = format!("left: {}%; right: {}%", delay_left, duration_right);
@@ -64,24 +64,23 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
                 <input type="range"
                     ref={delay_input}
                     oninput={on_delay_input}
-                    max={MAX_DURATION.to_string()}
-                    value={props.delay.to_string()}
+                    max={(MAX_DURATION / 60).to_string()}
+                    value={(props.delay / 60).to_string()}
                     disabled={props.in_session}
                 />
                 <input type="range"
                     ref={duration_input}
                     oninput={on_duration_input}
-                    max={MAX_DURATION.to_string()}
-                    value={props.duration.to_string()}
+                    max={(MAX_DURATION / 60).to_string()}
+                    value={(props.duration / 60).to_string()}
                     disabled={props.in_session}
                 />
             </div>
             <div class="range-icons">
-            if props.delay > 1 {
+            if props.delay / 60 > 1 {
                 <img src="assets/silent.svg" style={delay_bell_style} />
             }
-                <img src="assets/bell.svg" style={duration_bell_style} />
-            </div>
+                <img src="assets/bell.svg" style={duration_bell_style} /> </div>
         </div>
     }
 }
