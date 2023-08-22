@@ -14,12 +14,20 @@ members = ["src-tauri"]
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-gloo-console = "0.3.0"
-gloo-events = "0.1.2"
-gloo-timers = "0.2.6"
-rand = "0.8.5"
+gloo-console = "0.3"
+gloo-events = "0.1"
+gloo-timers = "0.2"
+rand = "0.8"
 getrandom = { version = "0.2", features = ["js"] }
-wasm-bindgen = "0.2.83"
-web-sys = { version = "0.3.59", features = ["HtmlDivElement", "Navigator", "ScrollIntoViewOptions",
-    "ScrollLogicalPosition"] }
+wasm-bindgen = "0.2"
 yew = { version="0.20", features=["csr"] }
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+    "HtmlDivElement",
+    "HtmlMediaElement",
+    "Navigator",
+    "ScrollIntoViewOptions",
+    "ScrollLogicalPosition",
+]

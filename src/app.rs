@@ -4,6 +4,7 @@ use gloo_console::log;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
 use wasm_bindgen::{JsValue, prelude::*};
+use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew::platform::{spawn_local, time::sleep};
 
@@ -55,6 +56,7 @@ pub enum Msg {
     OnDurationChange(usize),
     ReduceTimer,
     StopSession,
+    PlaySound(NodeRef),
     OnAppPause,
     OnAppResume,
 }
@@ -76,6 +78,10 @@ pub struct App {
     signals: Vec<usize>,
     /// Session time remaining in seconds
     time_remaining: usize,
+    /// Ding sound ref
+    ding_sound: NodeRef,
+    /// Bowl sound ref
+    bowl_sound: NodeRef,
     /// App global event listeners
     _app_event_listeners: AppEventListeners,
 }
@@ -123,6 +129,8 @@ impl Component for App {
             is_paused: false,
             signals: vec![],
             time_remaining: INITIAL_DURATION,
+            ding_sound: NodeRef::default(),
+            bowl_sound: NodeRef::default(),
             _app_event_listeners: listeners,
         }
     }
@@ -139,6 +147,7 @@ impl Component for App {
                     JsValue::from(self.signals[4])
                 );
                 let scope = ctx.link().clone();
+                scope.send_message(Msg::PlaySound(self.ding_sound.clone()));
                 self.in_session = true;
                 self.time_remaining = self.duration;
                 let interval = Interval::new(1_000, move || {
@@ -190,12 +199,15 @@ impl Component for App {
                     self.time_remaining -= 1;
                     let time_elapsed = self.duration - self.time_remaining;
                     log!(self.time_remaining, time_elapsed);
-                    if self.signals.contains(&time_elapsed) {
-                        log!("DING!");
+                    // Play ding sound for all signals except of the last
+                    if self.signals[0..self.signals.len() - 1].contains(&time_elapsed) {
+                        let scope = ctx.link().clone();
+                        scope.send_message(Msg::PlaySound(self.ding_sound.clone()));
                     }
                     if self.time_remaining == 0 {
                         let scope = ctx.link().clone();
                         scope.send_message(Msg::StopSession);
+                        scope.send_message(Msg::PlaySound(self.bowl_sound.clone()));
                     }
                 }
             }
@@ -204,6 +216,12 @@ impl Component for App {
                 self.in_session = false;
                 self.is_paused = false;
                 self.time_remaining = self.duration;
+            }
+            Msg::PlaySound(sound_ref) => {
+                let sound = sound_ref
+                    .cast::<HtmlMediaElement>()
+                    .unwrap();
+                sound.play();
             }
             Msg::OnAppPause => {
             }
@@ -254,6 +272,8 @@ impl Component for App {
                         on_click={ctx.link().callback(|_| Msg::OnSettingsPauseButtonPress)}
                     />
                 </section>
+                <audio ref={self.ding_sound.clone()} src="assets/sounds/ding.ogg" />
+                <audio ref={self.bowl_sound.clone()} src="assets/sounds/bowl.ogg" />
             </main>
         }
     }
