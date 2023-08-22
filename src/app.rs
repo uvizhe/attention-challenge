@@ -218,10 +218,6 @@ impl Component for App {
             <main>
                 <section class="session">
                     <h2>{ "Session Parameters [?]" }</h2>
-                    <div class="session-params">
-                        <div class="value">{ format!("Delay: {} min", self.delay / 60) }</div>
-                        <div class="value">{ format!("Duration: {} min", self.duration / 60) }</div>
-                    </div>
                     <SessionControls
                         delay={self.delay}
                         duration={self.duration}
@@ -229,6 +225,16 @@ impl Component for App {
                         on_delay_change={ctx.link().callback(|val| Msg::OnDelayChange(val))}
                         on_duration_change={ctx.link().callback(|val| Msg::OnDurationChange(val))}
                     />
+                    <div class="session-params">
+                        <div class="value">
+                            <strong>{ "Delay:" }</strong>
+                            { format!("{} min", self.delay / 60) }
+                        </div>
+                        <div class="value">
+                            <strong>{ "Duration:" }</strong>
+                            { format!("{} min", self.duration / 60) }
+                        </div>
+                    </div>
                 </section>
                 <section class="main-controls">
                     <Button icon="help"

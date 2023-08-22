@@ -57,6 +57,12 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
 
     html! {
         <div class="session-controls">
+            <div class="range-icons">
+            if props.delay / 60 > 1 {
+                <img src="assets/icons/silent.svg" style={delay_bell_style} />
+            }
+                <img src="assets/icons/bell.svg" style={duration_bell_style} />
+            </div>
             <div class="range-slider">
                 <span class="passive-session-range" style={passive_slider_style}></span>
                 <span class="active-session-range" style={active_slider_style}></span>
@@ -76,11 +82,6 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
                     disabled={props.in_session}
                 />
             </div>
-            <div class="range-icons">
-            if props.delay / 60 > 1 {
-                <img src="assets/icons/silent.svg" style={delay_bell_style} />
-            }
-                <img src="assets/icons/bell.svg" style={duration_bell_style} /> </div>
         </div>
     }
 }
