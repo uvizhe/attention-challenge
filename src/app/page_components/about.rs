@@ -8,10 +8,16 @@ pub fn about() -> Html {
     let navigator = use_navigator().unwrap();
 
     let onclick = Callback::from(move |_| navigator.push(&Route::Home));
+
     html! {
-        <div>
-            <h1>{ "About" }</h1>
-            <button {onclick}>{ "Go Home" }</button>
-        </div>
+        <>
+            <header>
+                <button {onclick}>{ "Back" }</button>
+                <h1>{ "About" }</h1>
+            </header>
+            <main>
+                <h2>{ "Attention Challenge" }</h2>
+            </main>
+        </>
     }
 }

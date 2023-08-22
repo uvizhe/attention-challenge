@@ -19,13 +19,11 @@ const INITIAL_DURATION: usize = 10 * 60;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
+    #[not_found]
     #[at("/")]
     Home,
     #[at("/about")]
     About,
-    #[not_found]
-    #[at("/404")]
-    NotFound,
 }
 
 fn switch(routes: Route) -> Html {
@@ -36,7 +34,6 @@ fn switch(routes: Route) -> Html {
         Route::About => html! {
             <About />
         },
-        Route::NotFound => html! { <h1>{ "404" }</h1> },
     }
 }
 
