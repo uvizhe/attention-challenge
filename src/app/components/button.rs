@@ -18,9 +18,9 @@ pub fn button(props: &ButtonProps) -> Html {
     };
 
     let icon_file = if props.in_session {
-        format!("assets/{}.svg", props.alt_icon)
+        format!("assets/icons/{}.svg", props.alt_icon)
     } else {
-        format!("assets/{}.svg", props.icon)
+        format!("assets/icons/{}.svg", props.icon)
     };
 
     html! {

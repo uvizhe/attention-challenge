@@ -33,7 +33,7 @@ pub fn main_button(props: &MainButtonProps) -> Html {
             </div>
         } else {
             <div class="play-icon-container">
-                <img class="icon" src="assets/play.svg" />
+                <img class="icon" src="assets/icons/play.svg" />
             </div>
             <div class="main-button-duration">
                 { duration() }

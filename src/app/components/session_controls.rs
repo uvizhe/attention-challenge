@@ -78,9 +78,9 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
             </div>
             <div class="range-icons">
             if props.delay / 60 > 1 {
-                <img src="assets/silent.svg" style={delay_bell_style} />
+                <img src="assets/icons/silent.svg" style={delay_bell_style} />
             }
-                <img src="assets/bell.svg" style={duration_bell_style} /> </div>
+                <img src="assets/icons/bell.svg" style={duration_bell_style} /> </div>
         </div>
     }
 }
