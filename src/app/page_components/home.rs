@@ -6,7 +6,7 @@ use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::app::Route;
+use crate::app::{Route, VolumeLevel};
 use crate::app::components::button::Button;
 use crate::app::components::main_button::MainButton;
 use crate::app::components::session_controls::SessionControls;
@@ -16,15 +16,6 @@ const MAX_DURATION: usize = 30 * 60;
 const MIN_ACTIVE_SESSION: usize = 5 * 60;
 const INITIAL_DELAY: usize = 3 * 60;
 const INITIAL_DURATION: usize = 10 * 60;
-
-#[derive(PartialEq)]
-enum HomeState {
-    ShowsMain,
-    ShowsHelp,
-    ShowsSettings,
-    RunsSession,
-    RatesSession,
-}
 
 // Event listeners that listen for global app events
 struct AppEventListeners {
@@ -45,9 +36,12 @@ pub enum Msg {
     OnAppResume,
 }
 
+#[derive(Properties, PartialEq)]
+pub struct HomeProps {
+    pub volume: VolumeLevel,
+}
+
 pub struct Home {
-    /// App current state
-    state: HomeState,
     /// Timer Interval
     interval: Option<Interval>,
     /// Active session delay
@@ -72,7 +66,7 @@ pub struct Home {
 
 impl Component for Home {
     type Message = Msg;
-    type Properties = ();
+    type Properties = HomeProps;
 
     fn create(ctx: &Context<Self>) -> Self {
         let document = web_sys::window().unwrap()
@@ -102,7 +96,6 @@ impl Component for Home {
         let listeners = AppEventListeners { _pause: pause, _resume: resume };
 
         Self {
-            state: HomeState::ShowsMain,
             interval: None::<Interval>,
             delay: INITIAL_DELAY,
             duration: INITIAL_DURATION,
@@ -149,6 +142,8 @@ impl Component for Home {
                 if self.in_session {
                     self.is_paused = !self.is_paused;
                 } else {
+                    let navigator = ctx.link().navigator().unwrap();
+                    navigator.push(&Route::Settings);
                 }
             }
             Msg::OnDelayChange(value) => {
@@ -204,6 +199,7 @@ impl Component for Home {
                 let sound = sound_ref
                     .cast::<HtmlMediaElement>()
                     .unwrap();
+                sound.set_volume(ctx.props().volume.html_value());
                 sound.play();
             }
             Msg::OnAppPause => {

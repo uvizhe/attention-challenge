@@ -63,10 +63,10 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
             }
                 <img src="assets/icons/bell.svg" style={duration_bell_style} />
             </div>
-            <div class="range-slider">
+            <div class="range-slider full-width">
                 <span class="passive-session-range" style={passive_slider_style}></span>
                 <span class="active-session-range" style={active_slider_style}></span>
-                <span class="available-session-range" style={available_slider_style}></span>
+                <span class="available-range" style={available_slider_style}></span>
                 <input type="range"
                     ref={delay_input}
                     oninput={on_delay_input}
