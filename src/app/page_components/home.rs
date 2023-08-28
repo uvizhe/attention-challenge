@@ -9,6 +9,7 @@ use yew_router::prelude::*;
 use crate::app::{Route, VolumeLevel};
 use crate::app::components::button::Button;
 use crate::app::components::main_button::MainButton;
+use crate::app::components::rating_modal::RatingModal;
 use crate::app::components::session_controls::SessionControls;
 use crate::rsg::generate_random_signals;
 
@@ -29,6 +30,7 @@ pub enum Msg {
     OnSettingsPauseButtonPress,
     OnDelayChange(usize),
     OnDurationChange(usize),
+    OnSessionRated(usize),
     ReduceTimer,
     StopSession,
     PlaySound(NodeRef),
@@ -56,6 +58,8 @@ pub struct Home {
     signals: Vec<usize>,
     /// Session time remaining in seconds
     time_remaining: usize,
+    /// Rating modal visibility
+    rating_modal: bool,
     /// Ding sound ref
     ding_sound: NodeRef,
     /// Bowl sound ref
@@ -103,6 +107,7 @@ impl Component for Home {
             is_paused: false,
             signals: vec![],
             time_remaining: INITIAL_DURATION,
+            rating_modal: false,
             ding_sound: NodeRef::default(),
             bowl_sound: NodeRef::default(),
             _app_event_listeners: listeners,
@@ -172,6 +177,10 @@ impl Component for Home {
                     self.duration = value;
                 }
             }
+            Msg::OnSessionRated(value) => {
+                log!(value);
+                self.rating_modal = false;
+            }
             Msg::ReduceTimer => {
                 if !self.is_paused {
                     self.time_remaining -= 1;
@@ -186,6 +195,7 @@ impl Component for Home {
                         let scope = ctx.link().clone();
                         scope.send_message(Msg::StopSession);
                         scope.send_message(Msg::PlaySound(self.bowl_sound.clone()));
+                        self.rating_modal = true;
                     }
                 }
             }
@@ -251,6 +261,10 @@ impl Component for Home {
                         on_click={ctx.link().callback(|_| Msg::OnSettingsPauseButtonPress)}
                     />
                 </section>
+                <RatingModal
+                    visible={self.rating_modal}
+                    callback={ctx.link().callback(|val| Msg::OnSessionRated(val))}
+                />
                 <audio ref={self.ding_sound.clone()} src="assets/sounds/ding.ogg" />
                 <audio ref={self.bowl_sound.clone()} src="assets/sounds/bowl.ogg" />
             </main>

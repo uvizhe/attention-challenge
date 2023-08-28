@@ -31,4 +31,5 @@ features = [
     "Navigator",
     "ScrollIntoViewOptions",
     "ScrollLogicalPosition",
+    "Window",
 ]

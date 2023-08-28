@@ -16,6 +16,7 @@ body {
 }
 header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background-color: #aa7c19;
   color: white;
@@ -68,6 +69,10 @@ button:disabled {
 h2 {
   margin-top: 0;
   margin-bottom: revert;
+  text-align: center;
+}
+input[type=radio] {
+  display: none;
 }
 input[type=range] {
   -webkit-appearance: none;
@@ -250,4 +255,57 @@ input[type=range]::-moz-range-thumb {
 }
 .sound-range-icon-up, .sound-range-icon-down {
   margin-left: 3px;
+}
+.rating-modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background-color: white;
+  margin: 50vh auto;
+  transform: translateY(-50%);
+  padding: 25px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.modal-content h2 {
+  margin: 0;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.modal-buttons button {
+  background-color: white;
+  color: #616161;
+  width: 150px;
+  cursor: pointer;
+  border: none;
+  padding: 5px 0;
+  box-shadow: none;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+}
+.modal-buttons button:first-of-type {
+  padding-right: 25px;
+}
+.modal-buttons button:last-of-type {
+  padding-left: 25px;
+}
+.rating {
+  display: flex;
+  justify-content: center;
+}
+.rating img {
+  width: 54px;
+  height: 54px;
+  cursor: pointer;
 }
