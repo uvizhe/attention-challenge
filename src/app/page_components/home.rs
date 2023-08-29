@@ -1,11 +1,13 @@
 use gloo_console::log;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
+use js_sys::Date;
 use wasm_bindgen::{JsValue, prelude::*};
 use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+use crate::db::{Db, Session};
 use crate::app::{Route, VolumeLevel};
 use crate::app::components::button::Button;
 use crate::app::components::main_button::MainButton;
@@ -44,6 +46,10 @@ pub struct HomeProps {
 }
 
 pub struct Home {
+    /// App database
+    db: Db,
+    /// Current session Date
+    session_date: Option<Date>,
     /// Timer Interval
     interval: Option<Interval>,
     /// Active session delay
@@ -99,10 +105,16 @@ impl Component for Home {
         );
         let listeners = AppEventListeners { _pause: pause, _resume: resume };
 
+        let db = Db::new();
+        let delay = db.get_active_session_delay();
+        let duration = db.get_session_duration();
+
         Self {
+            db,
+            session_date: None,
             interval: None::<Interval>,
-            delay: INITIAL_DELAY,
-            duration: INITIAL_DURATION,
+            delay,
+            duration,
             in_session: false,
             is_paused: false,
             signals: vec![],
@@ -117,6 +129,9 @@ impl Component for Home {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::OnMainButtonPress => {
+                // Register session start time
+                self.session_date = Some(Date::new_0());
+
                 self.signals = generate_random_signals(self.duration - self.delay, self.delay);
                 log!(
                     JsValue::from(self.signals[0]),
@@ -163,6 +178,7 @@ impl Component for Home {
                 } else {
                     self.delay = value;
                 }
+                self.db.set_active_session_delay(self.delay);
             }
             Msg::OnDurationChange(value) => {
                 if value < self.delay + MIN_ACTIVE_SESSION {
@@ -176,10 +192,13 @@ impl Component for Home {
                 } else {
                     self.duration = value;
                 }
+                self.db.set_session_duration(self.duration);
             }
             Msg::OnSessionRated(value) => {
-                log!(value);
                 self.rating_modal = false;
+                let session_date = self.session_date.take().unwrap();
+                let session = Session::new(session_date, self.duration / 60, value);
+                self.db.add_session(session);
             }
             Msg::ReduceTimer => {
                 if !self.is_paused {
