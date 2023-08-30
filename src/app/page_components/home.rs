@@ -10,6 +10,7 @@ use yew_router::prelude::*;
 use crate::db::{Db, Session};
 use crate::app::{Route, VolumeLevel};
 use crate::app::components::button::Button;
+use crate::app::components::charts::ScoreChart;
 use crate::app::components::main_button::MainButton;
 use crate::app::components::rating_modal::RatingModal;
 use crate::app::components::session_controls::SessionControls;
@@ -244,6 +245,10 @@ impl Component for Home {
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <main>
+                <section class="chart">
+                    <h2>{ "Daily Average Chart [?]" }</h2>
+                    <ScoreChart avgs={self.db.get_avgs()} />
+                </section>
                 <section class="session">
                     <h2>{ "Session Parameters [?]" }</h2>
                     <SessionControls
