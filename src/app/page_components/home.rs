@@ -199,7 +199,7 @@ impl Component for Home {
             Msg::OnSessionRated(value) => {
                 self.rating_modal = false;
                 let session_date = self.session_date.take().unwrap();
-                let session = Session::new(session_date, self.duration / 60, value);
+                let session = Session::new(session_date, self.duration, value);
                 self.db.add_session(session);
             }
             Msg::ReduceTimer => {

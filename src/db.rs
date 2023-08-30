@@ -20,32 +20,45 @@ impl Db {
 
     pub fn get_session_duration(&self) -> usize {
         if let Ok(value) = self.local_storage.get_item("_config:sessionDuration") {
-            value.unwrap_or(INITIAL_DURATION.to_string()).parse().unwrap()
+            if let Some(value_min) = value {
+                value_min.parse::<usize>().unwrap() * 60
+            } else {
+                INITIAL_DURATION
+            }
         } else {
             INITIAL_DURATION
         }
     }
 
     pub fn set_session_duration(&self, duration: usize) {
-        self.local_storage.set_item("_config:sessionDuration", &duration.to_string()).unwrap();
+        // Use minutes
+        let duration_min = duration / 60;
+        self.local_storage.set_item("_config:sessionDuration", &duration_min.to_string()).unwrap();
     }
 
     pub fn get_active_session_delay(&self) -> usize {
         if let Ok(value) = self.local_storage.get_item("_config:bellsDeferral") {
-            value.unwrap_or(INITIAL_DELAY.to_string()).parse().unwrap()
+            if let Some(value_min) = value {
+                value_min.parse::<usize>().unwrap() * 60
+            } else {
+                INITIAL_DELAY
+            }
         } else {
             INITIAL_DELAY
         }
     }
 
     pub fn set_active_session_delay(&self, delay: usize) {
-        self.local_storage.set_item("_config:bellsDeferral", &delay.to_string()).unwrap();
+        // Use minutes
+        let delay_min = delay / 60;
+        self.local_storage.set_item("_config:bellsDeferral", &delay_min.to_string()).unwrap();
     }
 
     pub fn add_session(&self, session: Session) {
         let date = session.date();
         let ts = session.ts();
-        let duration = session.duration;
+        // Use minutes
+        let duration = session.duration / 60;
         let score = session.score;
         // Last session date
         let last_session_today = if let Ok(maybe_value) = self.local_storage.get_item("_data:lastSessionDate") {
@@ -105,6 +118,18 @@ impl Db {
                 "_data:avgs",
                 &serde_json::to_string(&avgs).unwrap(),
             );
+        }
+    }
+
+    pub fn get_avgs(&self) -> Vec<f32> {
+        if let Ok(maybe_value) = self.local_storage.get_item("_data:avgs") {
+            if let Some(value) = maybe_value {
+                serde_json::from_str(&value).unwrap()
+            } else {
+                Vec::new()
+            }
+        } else {
+            Vec::new()
         }
     }
 }
