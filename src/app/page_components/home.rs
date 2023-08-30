@@ -178,6 +178,7 @@ impl Component for Home {
                 } else {
                     self.delay = value;
                 }
+                self.db.set_session_duration(self.duration);
                 self.db.set_active_session_delay(self.delay);
             }
             Msg::OnDurationChange(value) => {
@@ -193,6 +194,7 @@ impl Component for Home {
                     self.duration = value;
                 }
                 self.db.set_session_duration(self.duration);
+                self.db.set_active_session_delay(self.delay);
             }
             Msg::OnSessionRated(value) => {
                 self.rating_modal = false;
