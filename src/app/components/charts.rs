@@ -22,7 +22,7 @@ impl Component for ScoreChart {
         }
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div ref={self.canvas_ref.clone()}>
                 <svg viewBox="0 0 100 100" />
@@ -30,7 +30,7 @@ impl Component for ScoreChart {
         }
     }
 
-    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
+    fn rendered(&mut self, ctx: &Context<Self>, _first_render: bool) {
         let mut svg = String::new();
         let div_wrapper: HtmlDivElement = self.canvas_ref.cast().unwrap();
         let rect = div_wrapper.get_bounding_client_rect();
@@ -75,7 +75,7 @@ fn draw_avgs(chart: &DrawingArea<SVGBackend<'_>, Shift>, avgs: &Vec<f32>) {
                 .enumerate()
                 .map(|(x, y)| (x as f64, *y as f64))
         };
-        let drawing = ChartBuilder::on(&chart)
+        ChartBuilder::on(&chart)
             .build_cartesian_2d(0.0..x_len, 0.0..5.0)
             .unwrap()
             .draw_series(
@@ -89,7 +89,7 @@ fn draw_avgs(chart: &DrawingArea<SVGBackend<'_>, Shift>, avgs: &Vec<f32>) {
         // Draw a single value as circle
         let dot = EmptyElement::at((0.0, avgs[0] as f64))
             + Circle::new((0, 0), 4, ShapeStyle::from(color).filled());
-        ChartBuilder::on(chart)
+        let _ = ChartBuilder::on(chart)
             .build_cartesian_2d(0.0..0.0, 0.0..5.0)
             .unwrap()
             .plotting_area()

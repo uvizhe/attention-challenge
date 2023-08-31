@@ -1,10 +1,3 @@
-use std::rc::Rc;
-
-use gloo_console::log;
-use gloo_events::EventListener;
-use gloo_timers::callback::Interval;
-use wasm_bindgen::{JsValue, prelude::*};
-use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -44,13 +37,13 @@ impl Component for App {
     type Message = AppMsg;
     type Properties = ();
 
-    fn create(ctx: &Context<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             volume: VolumeLevel::default(),
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             AppMsg::OnVolumeChange(val) => {
                 self.volume = val;

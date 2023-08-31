@@ -10,7 +10,6 @@ pub struct RatingModalProps {
 
 #[function_component(RatingModal)]
 pub fn rating_modal(props: &RatingModalProps) -> Html {
-    let volume_input = use_node_ref();
     let choice = use_state(|| 0);
 
     let oninput = {

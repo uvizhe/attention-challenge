@@ -1,5 +1,3 @@
-use wasm_bindgen::JsCast;
-use web_sys::{EventTarget, HtmlInputElement};
 use yew::prelude::*;
 
 use crate::app::MAX_DURATION;

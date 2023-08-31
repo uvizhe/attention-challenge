@@ -2,24 +2,19 @@ use gloo_console::log;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
 use js_sys::Date;
-use wasm_bindgen::{JsValue, prelude::*};
+use wasm_bindgen::JsValue;
 use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::db::{Db, Session};
-use crate::app::{Route, VolumeLevel};
+use crate::app::{Route, VolumeLevel, INITIAL_DURATION, MAX_DURATION, MIN_ACTIVE_SESSION};
 use crate::app::components::button::Button;
 use crate::app::components::charts::ScoreChart;
 use crate::app::components::main_button::MainButton;
 use crate::app::components::rating_modal::RatingModal;
 use crate::app::components::session_controls::SessionControls;
 use crate::rsg::generate_random_signals;
-
-const MAX_DURATION: usize = 30 * 60;
-const MIN_ACTIVE_SESSION: usize = 5 * 60;
-const INITIAL_DELAY: usize = 3 * 60;
-const INITIAL_DURATION: usize = 10 * 60;
 
 // Event listeners that listen for global app events
 struct AppEventListeners {
@@ -232,7 +227,7 @@ impl Component for Home {
                     .cast::<HtmlMediaElement>()
                     .unwrap();
                 sound.set_volume(ctx.props().volume.html_value());
-                sound.play();
+                let _ = sound.play().expect("Unable to play sound");
             }
             Msg::OnAppPause => {
             }

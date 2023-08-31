@@ -17,7 +17,6 @@ pub fn settings(props: &SettingsProps) -> Html {
     let onclick = Callback::from(move |_| navigator.push(&Route::Home));
 
     let on_volume_change = {
-        let volume = props.volume.clone();
         let volume_callback = props.on_volume_change.clone();
         Callback::from(move |val| {
             let level = match val {

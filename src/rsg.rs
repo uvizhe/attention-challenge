@@ -16,7 +16,7 @@ pub fn generate_random_signals(active_session_duration: usize, session_delay: us
     */
     let mut rng = thread_rng();
 
-    let mut t_min = t_min_for_duration(active_session_duration);
+    let t_min = t_min_for_duration(active_session_duration);
     let mut double_mean = 2 * active_session_duration / SIGNAL_COUNT;
     let t_max = double_mean - t_min;
 
@@ -24,9 +24,9 @@ pub fn generate_random_signals(active_session_duration: usize, session_delay: us
     let mut time_remaining = active_session_duration;
     let mut signals_left = SIGNAL_COUNT;
     let mut next_t_min = t_min;
-    let mut next_t_max = t_max;
+    let mut next_t_max;
     // Generate random intervals
-    for i in 1..SIGNAL_COUNT {
+    for _ in 1..SIGNAL_COUNT {
         double_mean = 2 * time_remaining / signals_left;
         next_t_max = double_mean - next_t_min;
         while next_t_max > t_max {
@@ -55,8 +55,6 @@ pub fn generate_random_signals(active_session_duration: usize, session_delay: us
 
 /// Reduces minimum interval for short sessions to keep interval variability.
 fn t_min_for_duration(session_duration: usize) -> usize {
-    let min = MINIMUM_T_MIN;
-    let max = MAXIMUM_T_MIN;
     // Min duration where t_min is minimum
     let min_duration = MINIMUM_T_MIN * 10;
     let extra_duration = session_duration - min_duration;

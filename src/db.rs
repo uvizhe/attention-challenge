@@ -1,6 +1,6 @@
 use js_sys::Date;
 use serde::{Deserialize, Serialize};
-use web_sys::{window, Storage};
+use web_sys::Storage;
 
 use crate::app::{INITIAL_DELAY, INITIAL_DURATION};
 
@@ -33,7 +33,8 @@ impl Db {
     pub fn set_session_duration(&self, duration: usize) {
         // Use minutes
         let duration_min = duration / 60;
-        self.local_storage.set_item("_config:sessionDuration", &duration_min.to_string()).unwrap();
+        self.local_storage.set_item("_config:sessionDuration", &duration_min.to_string())
+            .expect("Unable to writo to LocalStorage");
     }
 
     pub fn get_active_session_delay(&self) -> usize {
@@ -51,7 +52,8 @@ impl Db {
     pub fn set_active_session_delay(&self, delay: usize) {
         // Use minutes
         let delay_min = delay / 60;
-        self.local_storage.set_item("_config:bellsDeferral", &delay_min.to_string()).unwrap();
+        self.local_storage.set_item("_config:bellsDeferral", &delay_min.to_string())
+            .expect("Unable to writo to LocalStorage");
     }
 
     pub fn add_session(&self, session: Session) {
@@ -70,7 +72,8 @@ impl Db {
         } else {
             false
         };
-        self.local_storage.set_item("_data:lastSessionDate", &date).unwrap();
+        self.local_storage.set_item("_data:lastSessionDate", &date)
+            .expect("Unable to writo to LocalStorage");
         // Number of sessions today
         let mut sessions_today = 1;
         if let Ok(maybe_value) = self.local_storage.get_item("_data:sessionsToday") {
@@ -79,7 +82,8 @@ impl Db {
             if last_session_today {
                 sessions_today = value.parse::<usize>().unwrap() + 1;
             }
-            self.local_storage.set_item("_data:sessionsToday", &sessions_today.to_string());
+            self.local_storage.set_item("_data:sessionsToday", &sessions_today.to_string())
+                .expect("Unable to writo to LocalStorage");
         }
         // Sessions data
         if let Ok(maybe_value) = self.local_storage.get_item("_data:sessions") {
@@ -98,7 +102,7 @@ impl Db {
             self.local_storage.set_item(
                 "_data:sessions",
                 &serde_json::to_string(&sessions).unwrap(),
-            );
+            ).expect("Unable to writo to LocalStorage");
         }
         // Averages date
         if let Ok(maybe_value) = self.local_storage.get_item("_data:avgs") {
@@ -117,7 +121,7 @@ impl Db {
             self.local_storage.set_item(
                 "_data:avgs",
                 &serde_json::to_string(&avgs).unwrap(),
-            );
+            ).expect("Unable to writo to LocalStorage");
         }
     }
 
