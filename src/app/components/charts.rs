@@ -9,7 +9,7 @@ pub struct ScoreChartProps {
 }
 
 pub struct ScoreChart {
-    canvas_ref: NodeRef,
+    wrapper_ref: NodeRef,
 }
 
 impl Component for ScoreChart {
@@ -18,13 +18,13 @@ impl Component for ScoreChart {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            canvas_ref: NodeRef::default(),
+            wrapper_ref: NodeRef::default(),
         }
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <div ref={self.canvas_ref.clone()}>
+            <div ref={self.wrapper_ref.clone()} class="chart-wrapper" >
                 <svg viewBox="0 0 100 100" />
             </div>
         }
@@ -32,7 +32,7 @@ impl Component for ScoreChart {
 
     fn rendered(&mut self, ctx: &Context<Self>, _first_render: bool) {
         let mut svg = String::new();
-        let div_wrapper: HtmlDivElement = self.canvas_ref.cast().unwrap();
+        let div_wrapper: HtmlDivElement = self.wrapper_ref.cast().unwrap();
         let rect = div_wrapper.get_bounding_client_rect();
 
         {

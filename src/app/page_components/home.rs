@@ -9,11 +9,14 @@ use yew_router::prelude::*;
 
 use crate::db::{Db, Session};
 use crate::app::{Route, VolumeLevel, INITIAL_DURATION, MAX_DURATION, MIN_ACTIVE_SESSION};
-use crate::app::components::button::Button;
-use crate::app::components::charts::ScoreChart;
-use crate::app::components::main_button::MainButton;
-use crate::app::components::rating_modal::RatingModal;
-use crate::app::components::session_controls::SessionControls;
+use crate::app::components::{
+    button::Button,
+    charts::ScoreChart,
+    main_button::MainButton,
+    rating_modal::RatingModal,
+    section_title::SectionTitle,
+    session_controls::SessionControls,
+};
 use crate::rsg::generate_random_signals;
 
 // Event listeners that listen for global app events
@@ -241,11 +244,17 @@ impl Component for Home {
         html! {
             <main>
                 <section class="chart">
-                    <h2>{ "Daily Average Chart [?]" }</h2>
+                    <SectionTitle
+                        title={"Daily Average Chart"}
+                        hint={"This chart helps you assess how your attention develops"}
+                    />
                     <ScoreChart avgs={self.db.get_avgs()} />
                 </section>
                 <section class="session">
-                    <h2>{ "Session Parameters [?]" }</h2>
+                    <SectionTitle
+                        title={"Session Parameters"}
+                        hint={"You can adjust a total Duration of a session and a Delay of active session (when bells ring)"}
+                    />
                     <SessionControls
                         delay={self.delay}
                         duration={self.duration}
