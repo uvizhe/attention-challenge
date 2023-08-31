@@ -22,7 +22,10 @@ pub fn main_button(props: &MainButtonProps) -> Html {
     };
 
     let remaining_time = || {
-        props.time_remaining.to_string()
+        let mut seconds = props.time_remaining;
+        let minutes = seconds / 60;
+        seconds = seconds - minutes * 60;
+        format!("{:02}:{:02}", minutes, seconds)
     };
 
     html! {

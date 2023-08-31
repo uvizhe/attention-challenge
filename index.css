@@ -77,6 +77,7 @@ input[type=radio] {
 }
 input[type=range] {
   -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   appearance: none;
   pointer-events: none;
   background: none;
@@ -133,6 +134,10 @@ input[type=range]::-moz-range-thumb {
   font-size: 1.4em;
   font-weight: 500;
   bottom: 10px;
+}
+.main-button-timer {
+  font-size: 3.5rem;
+  font-weight: 500;
 }
 .round-button {
   width: 42px;
