@@ -71,6 +71,13 @@ h2 {
   margin-top: 0;
   margin-bottom: revert;
   text-align: center;
+  font-size: 1.2rem;
+}
+h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: start;
+  font-size: 1.1rem;
 }
 input[type=radio] {
   display: none;
@@ -317,9 +324,6 @@ input[type=range]::-moz-range-thumb {
   width: 100%;
   height: 100px;
 }
-.section-title {
-  font-size: 1.2em;
-}
 .tooltip {
   visibility: hidden;
   position: absolute;
@@ -346,4 +350,18 @@ input[type=range]::-moz-range-thumb {
   height: 16px;
   vertical-align: top;
   margin: 0 5px;
+}
+.about {
+  gap: 0 !important;
+}
+.about p {
+  width: 100%;
+  margin-top: 0;
+}
+.about hr {
+  width: 100%;
+}
+.legend {
+  display: flex;
+  justify-content: space-around;
 }
