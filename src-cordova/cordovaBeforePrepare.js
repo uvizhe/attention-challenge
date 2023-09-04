@@ -27,7 +27,9 @@ module.exports = function (context) {
 
     // Build WASM files
     console.log('Building WASM module...');
+    process.env.RUSTFLAGS = '--cfg cordova';
     execSync(wasm_build_cmd + cordova_root + wasm_dir, {'cwd': '../'});
     console.log('Removing excess files...');
     rmSync(wasm_dir + 'package.json');
+    rmSync(wasm_dir + 'LICENSE');
 }

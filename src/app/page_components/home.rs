@@ -3,12 +3,17 @@ use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
 use js_sys::Date;
 use wasm_bindgen::JsValue;
+#[cfg(cordova)]
+use wasm_bindgen::prelude::*;
 use web_sys::HtmlMediaElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::db::{Db, Session};
-use crate::app::{Route, VolumeLevel, INITIAL_DURATION, MAX_DURATION, MIN_ACTIVE_SESSION};
+use crate::app::{
+    is_android, Route, Sound, VolumeLevel,
+    INITIAL_DURATION, MAX_DURATION, MIN_ACTIVE_SESSION,
+};
 use crate::app::components::{
     button::Button,
     charts::ScoreChart,
@@ -18,6 +23,22 @@ use crate::app::components::{
     session_controls::SessionControls,
 };
 use crate::rsg::generate_random_signals;
+
+#[cfg(cordova)]
+#[wasm_bindgen(raw_module = "/js/aux.js")]
+extern "C" {
+    #[wasm_bindgen(js_name = playDing)]
+    fn play_ding();
+
+    #[wasm_bindgen(js_name = playBowl)]
+    fn play_bowl();
+
+    #[wasm_bindgen(js_name = startForegroundService)]
+    fn start_foreground_service();
+
+    #[wasm_bindgen(js_name = stopForegroundService)]
+    fn stop_foreground_service();
+}
 
 // Event listeners that listen for global app events
 struct AppEventListeners {
@@ -34,7 +55,7 @@ pub enum Msg {
     OnSessionRated(usize),
     ReduceTimer,
     StopSession,
-    PlaySound(NodeRef),
+    PlaySound(Sound),
     OnAppPause,
     OnAppResume,
 }
@@ -111,7 +132,7 @@ impl Component for Home {
         Self {
             db,
             session_date: None,
-            interval: None::<Interval>,
+            interval: None,
             delay,
             duration,
             in_session: false,
@@ -140,7 +161,7 @@ impl Component for Home {
                     JsValue::from(self.signals[4])
                 );
                 let scope = ctx.link().clone();
-                scope.send_message(Msg::PlaySound(self.ding_sound.clone()));
+                scope.send_message(Msg::PlaySound(Sound::Ding));
                 self.in_session = true;
                 self.time_remaining = self.duration;
                 let interval = Interval::new(1_000, move || {
@@ -209,12 +230,12 @@ impl Component for Home {
                     // Play ding sound for all signals except of the last
                     if self.signals[0..self.signals.len() - 1].contains(&time_elapsed) {
                         let scope = ctx.link().clone();
-                        scope.send_message(Msg::PlaySound(self.ding_sound.clone()));
+                        scope.send_message(Msg::PlaySound(Sound::Ding));
                     }
                     if self.time_remaining == 0 {
                         let scope = ctx.link().clone();
                         scope.send_message(Msg::StopSession);
-                        scope.send_message(Msg::PlaySound(self.bowl_sound.clone()));
+                        scope.send_message(Msg::PlaySound(Sound::Bowl));
                         self.rating_modal = true;
                     }
                 }
@@ -225,16 +246,33 @@ impl Component for Home {
                 self.is_paused = false;
                 self.time_remaining = self.duration;
             }
-            Msg::PlaySound(sound_ref) => {
-                let sound = sound_ref
-                    .cast::<HtmlMediaElement>()
-                    .unwrap();
-                sound.set_volume(ctx.props().volume.html_value());
-                let _ = sound.play().expect("Unable to play sound");
+            Msg::PlaySound(sound) => {
+                #[cfg(cordova)]
+                match sound {
+                    Sound::Ding => play_ding(),
+                    Sound::Bowl => play_bowl(),
+                }
+                if !is_android() {
+                    let sound_ref = match sound {
+                        Sound::Ding => self.ding_sound.clone(),
+                        Sound::Bowl => self.bowl_sound.clone(),
+                    };
+                    let sound = sound_ref
+                        .cast::<HtmlMediaElement>()
+                        .unwrap();
+                    sound.set_volume(ctx.props().volume.html_value());
+                    let _ = sound.play().expect("Unable to play sound");
+                 }
             }
             Msg::OnAppPause => {
+                #[cfg(cordova)]
+                if self.in_session {
+                    start_foreground_service();
+                }
             }
             Msg::OnAppResume => {
+                #[cfg(cordova)]
+                stop_foreground_service();
             }
         }
         true
@@ -295,8 +333,10 @@ impl Component for Home {
                     visible={self.rating_modal}
                     callback={ctx.link().callback(|val| Msg::OnSessionRated(val))}
                 />
-                <audio ref={self.ding_sound.clone()} src="assets/sounds/ding.ogg" />
-                <audio ref={self.bowl_sound.clone()} src="assets/sounds/bowl.ogg" />
+                if !is_android() {
+                    <audio ref={self.ding_sound.clone()} src="assets/sounds/ding.ogg" />
+                    <audio ref={self.bowl_sound.clone()} src="assets/sounds/bowl.ogg" />
+                }
             </main>
         }
     }

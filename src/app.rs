@@ -82,6 +82,11 @@ impl Component for App {
     }
 }
 
+pub enum Sound {
+    Bowl,
+    Ding,
+}
+
 #[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub enum VolumeLevel {
     #[default]

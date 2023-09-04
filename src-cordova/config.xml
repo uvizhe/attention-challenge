@@ -10,11 +10,13 @@
   <content src="index.html"/>
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
+  <preference name="Orientation" value="portrait" />
   <platform name="android">
     <preference name="AndroidWindowSplashScreenAnimatedIcon" value="../icons/xxxhdpi.png" />
     <preference name="AndroidWindowSplashScreenBackground" value="#FFFFFF" />
 
     <resource-file src="../icons/colors.xml" target="/app/src/main/res/values/colors.xml" />
+    <resource-file src="../icons/ac_bell.png" target="/app/src/main/res/drawable/ac_bell.png" />
 
     <icon background="@color/background" density="mdpi" foreground="../icons/mdpi.png" />
     <icon background="@color/background" density="hdpi" foreground="../icons/hdpi.png" />
@@ -23,7 +25,9 @@
     <icon background="@color/background" density="xxxhdpi" foreground="../icons/xxxhdpi.png" />
   </platform>
   <config-file parent="/manifest" target="AndroidManifest.xml">
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   </config-file>
   <hook src="cordovaBeforePrepare.js" type="before_prepare"/>
+  <hook src="removePermissions.js" type="after_prepare" />
 </widget>
