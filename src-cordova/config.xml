@@ -12,8 +12,8 @@
   <allow-intent href="https://*/*"/>
   <preference name="Orientation" value="portrait" />
   <platform name="android">
-    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="../icons/xxxhdpi.png" />
-    <preference name="AndroidWindowSplashScreenBackground" value="#FFFFFF" />
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="../icons/splash_round.png" />
+    <preference name="AndroidWindowSplashScreenBackground" value="#333333" />
 
     <resource-file src="../icons/colors.xml" target="/app/src/main/res/values/colors.xml" />
     <resource-file src="../icons/ac_bell.png" target="/app/src/main/res/drawable/ac_bell.png" />
