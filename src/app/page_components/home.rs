@@ -1,8 +1,6 @@
-use gloo_console::log;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
 use js_sys::Date;
-use wasm_bindgen::JsValue;
 #[cfg(cordova)]
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlMediaElement;
@@ -153,13 +151,6 @@ impl Component for Home {
                 self.session_date = Some(Date::new_0());
 
                 self.signals = generate_random_signals(self.duration - self.delay, self.delay);
-                log!(
-                    JsValue::from(self.signals[0]),
-                    JsValue::from(self.signals[1]),
-                    JsValue::from(self.signals[2]),
-                    JsValue::from(self.signals[3]),
-                    JsValue::from(self.signals[4])
-                );
                 let scope = ctx.link().clone();
                 scope.send_message(Msg::PlaySound(Sound::Ding));
                 self.in_session = true;
@@ -226,7 +217,6 @@ impl Component for Home {
                 if !self.is_paused {
                     self.time_remaining -= 1;
                     let time_elapsed = self.duration - self.time_remaining;
-                    log!(self.time_remaining, time_elapsed);
                     // Play ding sound for all signals except of the last
                     if self.signals[0..self.signals.len() - 1].contains(&time_elapsed) {
                         let scope = ctx.link().clone();
