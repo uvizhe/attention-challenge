@@ -9,3 +9,4 @@ src-cordova/www/js/attention*
 src-cordova/www/css/index.css
 src-cordova/plugins/
 src-cordova/platforms/
+src-tauri/
