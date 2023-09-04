@@ -28,10 +28,10 @@ use crate::rsg::generate_random_signals;
 #[wasm_bindgen(raw_module = "/js/aux.js")]
 extern "C" {
     #[wasm_bindgen(js_name = playDing)]
-    fn play_ding();
+    fn play_ding(volume: f64);
 
     #[wasm_bindgen(js_name = playBowl)]
-    fn play_bowl();
+    fn play_bowl(volume: f64);
 
     #[wasm_bindgen(js_name = startForegroundService)]
     fn start_foreground_service();
@@ -247,10 +247,11 @@ impl Component for Home {
                 self.time_remaining = self.duration;
             }
             Msg::PlaySound(sound) => {
+                let volume = ctx.props().volume.numeric_value();
                 #[cfg(cordova)]
                 match sound {
-                    Sound::Ding => play_ding(),
-                    Sound::Bowl => play_bowl(),
+                    Sound::Ding => play_ding(volume),
+                    Sound::Bowl => play_bowl(volume),
                 }
                 if !is_android() {
                     let sound_ref = match sound {
@@ -260,7 +261,7 @@ impl Component for Home {
                     let sound = sound_ref
                         .cast::<HtmlMediaElement>()
                         .unwrap();
-                    sound.set_volume(ctx.props().volume.html_value());
+                    sound.set_volume(volume);
                     let _ = sound.play().expect("Unable to play sound");
                  }
             }

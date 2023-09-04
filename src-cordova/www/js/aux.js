@@ -6,11 +6,13 @@ export function setMedia() {
   bowlSound = new Media('/android_asset/www/assets/sounds/bowl.ogg');
 }
 
-export function playDing() {
+export function playDing(volume) {
+  dingSound.setVolume(volume);
   dingSound.play();
 }
 
-export function playBowl() {
+export function playBowl(volume) {
+  bowlSound.setVolume(volume);
   bowlSound.play();
 }
 

@@ -96,10 +96,12 @@ pub enum VolumeLevel {
 }
 
 impl VolumeLevel {
-    pub fn html_value(&self) -> f64 {
+    pub fn numeric_value(&self) -> f64 {
         match self {
             Self::Max => 1.0,
+            Self::Moderate if is_android() => 0.2,
             Self::Moderate => 0.5,
+            Self::Low if is_android() => 0.05,
             Self::Low => 0.2,
         }
     }
