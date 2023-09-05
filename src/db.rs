@@ -2,7 +2,7 @@ use js_sys::Date;
 use serde::{Deserialize, Serialize};
 use web_sys::Storage;
 
-use crate::app::{INITIAL_DELAY, INITIAL_DURATION};
+use crate::app::{VolumeLevel, INITIAL_DELAY, INITIAL_DURATION};
 
 const LEGACY_STORAGE_KEYS: [&str; 8] = [
     "_config:tryout",
@@ -180,6 +180,38 @@ impl Db {
         } else {
             Vec::new()
         }
+    }
+
+    pub fn get_sound_volume(&self) -> VolumeLevel {
+        if let Ok(value) = self.local_storage.get_item("_config:soundVolume") {
+            if let Some(mut value) = value {
+                let prefix = LegacyStorageValues::NumberValue.prefix();
+                if value.contains(prefix) {
+                    value = value.strip_prefix(prefix).unwrap().to_string();
+                    let value = match value.parse::<usize>().unwrap() {
+                        5 => 2,
+                        4 => 1,
+                        3 => 1,
+                        2 => 0,
+                        1 => 0,
+                        _ => unimplemented!(),
+                    };
+                    VolumeLevel::from_config_value(value)
+                } else {
+                    VolumeLevel::from_config_value(value.parse::<usize>().unwrap())
+                }
+            } else {
+                VolumeLevel::default()
+            }
+        } else {
+            VolumeLevel::default()
+        }
+    }
+
+    pub fn set_sound_volume(&self, volume: &VolumeLevel) {
+        let value = volume.config_value();
+        self.local_storage.set_item("_config:soundVolume", &value.to_string())
+            .expect("Unable to writo to LocalStorage");
     }
 
     pub fn remove_legacy_keys(&self) {

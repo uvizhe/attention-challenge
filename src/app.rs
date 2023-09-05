@@ -43,13 +43,15 @@ impl Component for App {
         db.remove_legacy_keys();
 
         Self {
-            volume: VolumeLevel::default(),
+            volume: db.get_sound_volume(),
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             AppMsg::OnVolumeChange(val) => {
+                let db = Db::new();
+                db.set_sound_volume(&val);
                 self.volume = val;
             }
         }
@@ -100,6 +102,15 @@ pub enum VolumeLevel {
 }
 
 impl VolumeLevel {
+    pub fn from_config_value(value: usize) -> Self {
+        match value {
+            2 => Self::Max,
+            1 => Self::Moderate,
+            0 => Self::Low,
+            _ => unimplemented!(),
+        }
+    }
+
     pub fn numeric_value(&self) -> f64 {
         match self {
             Self::Max => 1.0,
@@ -107,6 +118,14 @@ impl VolumeLevel {
             Self::Moderate => 0.5,
             Self::Low if is_android() => 0.05,
             Self::Low => 0.2,
+        }
+    }
+
+    pub fn config_value(&self) -> usize {
+        match self {
+            Self::Max => 2,
+            Self::Moderate => 1,
+            Self::Low => 0,
         }
     }
 }
