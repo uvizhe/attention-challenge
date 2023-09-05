@@ -13,6 +13,7 @@ const css_dir = dst_dir + 'css/';
 const wasm_dir = dst_dir + 'js/';
 const wasm_build_cmd = 'wasm-pack build --release \
     --target=web \
+    --no-pack \
     --no-typescript \
     --out-dir=';
 
@@ -29,7 +30,4 @@ module.exports = function (context) {
     console.log('Building WASM module...');
     process.env.RUSTFLAGS = '--cfg cordova';
     execSync(wasm_build_cmd + cordova_root + wasm_dir, {'cwd': '../'});
-    console.log('Removing excess files...');
-    rmSync(wasm_dir + 'package.json');
-    rmSync(wasm_dir + 'LICENSE');
 }
