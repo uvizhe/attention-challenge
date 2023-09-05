@@ -242,7 +242,7 @@ impl Session {
 
     pub fn date(&self) -> String {
         format!(
-            "{}-{:02}-{}",
+            "{}-{:02}-{:02}",
             self.date.get_full_year(),
             self.date.get_month() + 1,
             self.date.get_date(),
