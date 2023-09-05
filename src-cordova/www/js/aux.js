@@ -7,13 +7,13 @@ export function setMedia() {
 }
 
 export function playDing(volume) {
-  dingSound.setVolume(volume);
   dingSound.play();
+  dingSound.setVolume(volume);
 }
 
 export function playBowl(volume) {
-  bowlSound.setVolume(volume);
   bowlSound.play();
+  bowlSound.setVolume(volume);
 }
 
 export function startForegroundService() {
