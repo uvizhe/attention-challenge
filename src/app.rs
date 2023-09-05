@@ -10,7 +10,7 @@ use page_components::about::About;
 use page_components::settings::Settings;
 
 pub const INITIAL_DELAY: usize = 3 * 60;
-pub const INITIAL_DURATION: usize = 10 * 60;
+pub const INITIAL_DURATION: usize = 15 * 60;
 const MAX_DURATION: usize = 30 * 60;
 const MIN_ACTIVE_SESSION: usize = 5 * 60;
 
