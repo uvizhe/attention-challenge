@@ -23,7 +23,7 @@ use crate::app::components::{
 use crate::rsg::generate_random_signals;
 
 #[cfg(cordova)]
-#[wasm_bindgen(raw_module = "/js/aux.js")]
+#[wasm_bindgen(raw_module = "/android_asset/www/js/aux.js")]
 extern "C" {
     #[wasm_bindgen(js_name = playDing)]
     fn play_ding(volume: f64);

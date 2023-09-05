@@ -22,7 +22,7 @@ pub fn sound_range(props: &SoundRangeProps) -> Html {
 
     html! {
         <div class="sound-range">
-            <img class="sound-range-icon-down" src="assets/icons/volume_down.svg" />
+            <img class="sound-range-icon-down" src="/android_asset/www/assets/icons/volume_down.svg" />
             <div class="range-slider">
                 <span class="available-range" />
                 <input type="range"
@@ -33,7 +33,7 @@ pub fn sound_range(props: &SoundRangeProps) -> Html {
                     value={props.value.to_string()}
                 />
             </div>
-            <img class="sound-range-icon-up" src="assets/icons/volume_up.svg" />
+            <img class="sound-range-icon-up" src="/android_asset/www/assets/icons/volume_up.svg" />
         </div>
     }
 }

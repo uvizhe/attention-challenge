@@ -12,7 +12,7 @@ pub fn section_title(props: &SectionTitleProps) -> Html {
         <h2 class="section-title">
             {props.title.clone()}
             <span class="tooltip-icon" data-tooltip={props.hint.clone()}>
-                <img src="assets/icons/help_round.svg" />
+                <img src="/android_asset/www/assets/icons/help_round.svg" />
                 <div class="tooltip">
                     <div class="tooltip-text">
                         {props.hint.clone()}

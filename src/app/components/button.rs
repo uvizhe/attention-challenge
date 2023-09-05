@@ -18,9 +18,9 @@ pub fn button(props: &ButtonProps) -> Html {
     };
 
     let icon_file = if props.in_session {
-        format!("assets/icons/{}.svg", props.alt_icon)
+        format!("/android_asset/www/assets/icons/{}.svg", props.alt_icon)
     } else {
-        format!("assets/icons/{}.svg", props.icon)
+        format!("/android_asset/www/assets/icons/{}.svg", props.icon)
     };
 
     html! {

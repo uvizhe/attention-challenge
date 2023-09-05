@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="org.supersapiens.achallengedev" version="0.1.0" xmlns="http://www.w3.org/ns/widgets"
+<widget id="org.supersapiens.achallengedevold" version="1.0.0" xmlns="http://www.w3.org/ns/widgets"
     xmlns:cdv="http://cordova.apache.org/ns/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android">
   <name>Attention Challenge</name>
@@ -11,6 +11,7 @@
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
   <preference name="Orientation" value="portrait" />
+  <preference name="AndroidInsecureFileModeEnabled" value="true" />
   <platform name="android">
     <preference name="AndroidWindowSplashScreenAnimatedIcon" value="../icons/splash_round.png" />
     <preference name="AndroidWindowSplashScreenBackground" value="#333333" />

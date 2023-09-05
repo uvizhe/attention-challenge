@@ -32,7 +32,7 @@ header button {
   font-size: 1em;
 }
 header button::before {
-  content: url("/assets/icons/back.svg");
+  content: url("/android_asset/www/assets/icons/back.svg");
   height: 24px;
   width: 20px;
 }

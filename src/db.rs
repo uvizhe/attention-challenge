@@ -4,6 +4,17 @@ use web_sys::Storage;
 
 use crate::app::{INITIAL_DELAY, INITIAL_DURATION};
 
+const LEGACY_STORAGE_KEYS: [&str; 8] = [
+    "_config:tryout",
+    "_config:startOfWeekDay",
+    "_config:publicProfile",
+    "_data:prevSyncTime",
+    "_data:offlineSessions",
+    "_data:lastSyncTime",
+    "_data:lastActionTime",
+    "auth-token",
+];
+
 pub struct Db {
     local_storage: Storage,
 }
@@ -20,8 +31,15 @@ impl Db {
 
     pub fn get_session_duration(&self) -> usize {
         if let Ok(value) = self.local_storage.get_item("_config:sessionDuration") {
-            if let Some(value_min) = value {
-                value_min.parse::<usize>().unwrap() * 60
+            if let Some(mut value_min) = value {
+                let prefix = LegacyStorageValues::NumberValue.prefix();
+                if value_min.contains(prefix) {
+                    value_min = value_min.strip_prefix(prefix).unwrap().to_string();
+                    // Durations were stored in seconds
+                    value_min.parse::<usize>().unwrap()
+                } else {
+                    value_min.parse::<usize>().unwrap() * 60
+                }
             } else {
                 INITIAL_DURATION
             }
@@ -39,8 +57,15 @@ impl Db {
 
     pub fn get_active_session_delay(&self) -> usize {
         if let Ok(value) = self.local_storage.get_item("_config:bellsDeferral") {
-            if let Some(value_min) = value {
-                value_min.parse::<usize>().unwrap() * 60
+            if let Some(mut value_min) = value {
+                let prefix = LegacyStorageValues::NumberValue.prefix();
+                if value_min.contains(prefix) {
+                    value_min = value_min.strip_prefix(prefix).unwrap().to_string();
+                    // Durations were stored in seconds
+                    value_min.parse::<usize>().unwrap()
+                } else {
+                    value_min.parse::<usize>().unwrap() * 60
+                }
             } else {
                 INITIAL_DELAY
             }
@@ -64,7 +89,11 @@ impl Db {
         let score = session.score;
         // Last session date
         let last_session_today = if let Ok(maybe_value) = self.local_storage.get_item("_data:lastSessionDate") {
-            if let Some(last_date) = maybe_value {
+            if let Some(mut last_date) = maybe_value {
+                let prefix = LegacyStorageValues::StringValue.prefix();
+                if last_date.contains(prefix) {
+                    last_date = last_date.strip_prefix(prefix).unwrap().to_string();
+                }
                 last_date == date
             } else {
                 false
@@ -77,7 +106,11 @@ impl Db {
         // Number of sessions today
         let mut sessions_today = 1;
         if let Ok(maybe_value) = self.local_storage.get_item("_data:sessionsToday") {
-            let value = maybe_value.unwrap_or("0".to_string());
+            let mut value = maybe_value.unwrap_or("0".to_string());
+            let prefix = LegacyStorageValues::NumberValue.prefix();
+            if value.contains(prefix) {
+                value = value.strip_prefix(prefix).unwrap().to_string();
+            }
             // If the last session was today, add to the number. Otherwise set to 1
             if last_session_today {
                 sessions_today = value.parse::<usize>().unwrap() + 1;
@@ -93,7 +126,11 @@ impl Db {
                 duration,
                 score,
             };
-            let mut sessions: Vec<SavedSession> = if let Some(value) = maybe_value {
+            let mut sessions: Vec<SavedSession> = if let Some(mut value) = maybe_value {
+                let prefix = LegacyStorageValues::ObjectValue.prefix();
+                if value.contains(prefix) {
+                    value = value.strip_prefix(prefix).unwrap().to_string();
+                }
                 serde_json::from_str(&value).unwrap()
             } else {
                 Vec::new()
@@ -106,7 +143,11 @@ impl Db {
         }
         // Averages date
         if let Ok(maybe_value) = self.local_storage.get_item("_data:avgs") {
-            let mut avgs: Vec<f32> = if let Some(value) = maybe_value {
+            let mut avgs: Vec<f32> = if let Some(mut value) = maybe_value {
+                let prefix = LegacyStorageValues::ObjectValue.prefix();
+                if value.contains(prefix) {
+                    value = value.strip_prefix(prefix).unwrap().to_string();
+                }
                 serde_json::from_str(&value).unwrap()
             } else {
                 Vec::new()
@@ -127,13 +168,23 @@ impl Db {
 
     pub fn get_avgs(&self) -> Vec<f32> {
         if let Ok(maybe_value) = self.local_storage.get_item("_data:avgs") {
-            if let Some(value) = maybe_value {
+            if let Some(mut value) = maybe_value {
+                let prefix = LegacyStorageValues::ObjectValue.prefix();
+                if value.contains(prefix) {
+                    value = value.strip_prefix(prefix).unwrap().to_string();
+                }
                 serde_json::from_str(&value).unwrap()
             } else {
                 Vec::new()
             }
         } else {
             Vec::new()
+        }
+    }
+
+    pub fn remove_legacy_keys(&self) {
+        for key in LEGACY_STORAGE_KEYS {
+            self.local_storage.remove_item(key).unwrap();
         }
     }
 }
@@ -174,4 +225,20 @@ struct SavedSession {
     ts: usize,
     duration: usize,
     score: usize,
+}
+
+enum LegacyStorageValues {
+    NumberValue,
+    ObjectValue,
+    StringValue,
+}
+
+impl LegacyStorageValues {
+    pub fn prefix(&self) -> &str {
+        match self {
+            LegacyStorageValues::NumberValue => "__q_numb|",
+            LegacyStorageValues::StringValue => "__q_strn|",
+            LegacyStorageValues::ObjectValue => "__q_objt|",
+        }
+    }
 }

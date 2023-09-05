@@ -4,6 +4,7 @@ use yew_router::prelude::*;
 mod components;
 mod page_components;
 
+use crate::db::Db;
 use page_components::home::Home;
 use page_components::about::About;
 use page_components::settings::Settings;
@@ -38,6 +39,9 @@ impl Component for App {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
+        let db = Db::new();
+        db.remove_legacy_keys();
+
         Self {
             volume: VolumeLevel::default(),
         }

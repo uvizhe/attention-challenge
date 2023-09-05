@@ -61,9 +61,9 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
                 { (1..=5)
                     .map(|i| {
                         let icon = if i <= *choice {
-                            "assets/icons/star.svg"
+                            "/android_asset/www/assets/icons/star.svg"
                         } else {
-                            "assets/icons/star_outline.svg"
+                            "/android_asset/www/assets/icons/star_outline.svg"
                         };
                         html! {
                             <>

@@ -57,9 +57,9 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         <div class="session-controls">
             <div class="range-icons">
             if props.delay / 60 > 1 {
-                <img src="assets/icons/silent.svg" style={delay_bell_style} />
+                <img src="/android_asset/www/assets/icons/silent.svg" style={delay_bell_style} />
             }
-                <img src="assets/icons/bell.svg" style={duration_bell_style} />
+                <img src="/android_asset/www/assets/icons/bell.svg" style={duration_bell_style} />
             </div>
             <div class="range-slider full-width">
                 <span class="passive-session-range" style={passive_slider_style}></span>
