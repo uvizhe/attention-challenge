@@ -4,9 +4,8 @@ use web_sys::Storage;
 
 use crate::app::{VolumeLevel, INITIAL_DELAY, INITIAL_DURATION};
 
-const LEGACY_STORAGE_KEYS: [&str; 8] = [
+const LEGACY_STORAGE_KEYS: [&str; 7] = [
     "_config:tryout",
-    "_config:startOfWeekDay",
     "_config:publicProfile",
     "_data:prevSyncTime",
     "_data:offlineSessions",
