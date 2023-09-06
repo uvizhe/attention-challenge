@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::app::MAX_DURATION;
+use crate::app::{MAX_DURATION, platform_url};
 
 #[derive(Properties, PartialEq)]
 pub struct SessionControlsProps {
@@ -53,13 +53,16 @@ pub fn session_controls(props: &SessionControlsProps) -> Html {
         else { 0.0 };
     let duration_bell_style = format!("left: {duration_bell_left}%");
 
+    let silent_icon_url = platform_url("assets/icons/silent.svg");
+    let bell_icon_url = platform_url("assets/icons/bell.svg");
+
     html! {
         <div class="session-controls">
             <div class="range-icons">
             if props.delay / 60 > 1 {
-                <img src="/android_asset/www/assets/icons/silent.svg" style={delay_bell_style} />
+                <img src={silent_icon_url} style={delay_bell_style} />
             }
-                <img src="/android_asset/www/assets/icons/bell.svg" style={duration_bell_style} />
+                <img src={bell_icon_url} style={duration_bell_style} />
             </div>
             <div class="range-slider full-width">
                 <span class="passive-session-range" style={passive_slider_style}></span>

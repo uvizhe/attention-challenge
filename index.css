@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: Roboto, sans-serif;
   -webkit-user-select: none;
 }
 html {
@@ -16,35 +16,27 @@ body {
 }
 header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: #aa7c19;
+  background-color: #ba8a30;
   color: white;
-  padding: 5px;
+  padding: 4px 10px;
 }
 header button {
-  display: flex;
-  align-items: center;
-  background-color: #dfab4a;
-  color: white;
+  border-right: 1px solid white;
+  background-color: #ba8a30;
   box-shadow: none;
-  border: 1px solid white;
-  font-size: 1em;
-}
-header button::before {
-  content: url("/android_asset/www/assets/icons/back.svg");
   height: 24px;
-  width: 20px;
+  padding: 0 5px;
 }
 header h1 {
+  display: inline;
   font-size: 1.1em;
   font-weight: bold;
-  margin: 0 10px;
+  margin: 0 15px;
 }
 main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
   height: 100%;
   min-width: 300px;
@@ -70,14 +62,23 @@ button:disabled {
 h2 {
   margin-top: 0;
   margin-bottom: revert;
+  margin-left: -10px;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: normal;
 }
 h3 {
   margin-top: 0;
   margin-bottom: 0;
   align-self: start;
   font-size: 1.1rem;
+  font-weight: 500;
+}
+a {
+  color: darkgoldenrod;
+}
+strong {
+  font-weight: 500;
 }
 input[type=radio] {
   display: none;
@@ -320,6 +321,9 @@ input[type=range]::-moz-range-thumb {
   height: 54px;
   cursor: pointer;
 }
+.chart {
+  flex-grow: 1;
+}
 .chart-wrapper {
   width: 100%;
   height: 100px;
@@ -346,6 +350,7 @@ input[type=range]::-moz-range-thumb {
   visibility: visible;
 }
 .tooltip-icon img {
+  position: absolute;
   width: 16px;
   height: 16px;
   vertical-align: top;
@@ -364,4 +369,8 @@ input[type=range]::-moz-range-thumb {
 .legend {
   display: flex;
   justify-content: space-around;
+}
+.footer {
+  text-align: center;
+  margin-top: revert !important;
 }

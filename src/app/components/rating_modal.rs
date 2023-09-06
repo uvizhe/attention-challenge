@@ -2,6 +2,8 @@ use web_sys::{HtmlInputElement, window};
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
+use crate::app::platform_url;
+
 #[derive(Properties, PartialEq)]
 pub struct RatingModalProps {
     pub visible: bool,
@@ -53,6 +55,9 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
 
     let style = if props.visible { "" } else { "display: none;" };
 
+    let star_icon_url = platform_url("assets/icons/star.svg");
+    let star_outline_icon_url = platform_url("assets/icons/star_outline.svg");
+
     html! {
         <div class="rating-modal" {style}>
             <div class="modal-content">
@@ -60,10 +65,10 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
                 <div class="rating">
                 { (1..=5)
                     .map(|i| {
-                        let icon = if i <= *choice {
-                            "/android_asset/www/assets/icons/star.svg"
+                        let icon_url = if i <= *choice {
+                            star_icon_url.clone()
                         } else {
-                            "/android_asset/www/assets/icons/star_outline.svg"
+                            star_outline_icon_url.clone()
                         };
                         html! {
                             <>
@@ -73,7 +78,7 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
                                     name="rating"
                                 />
                                 <label for={format!("s{i}")}>
-                                    <img class="rating-icon" src={icon} />
+                                    <img class="rating-icon" src={icon_url} />
                                 </label>
                             </>
                         }

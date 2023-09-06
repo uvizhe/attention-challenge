@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::app::platform_url;
+
 #[derive(Properties, PartialEq)]
 pub struct SoundRangeProps {
     pub value: usize,
@@ -20,9 +22,12 @@ pub fn sound_range(props: &SoundRangeProps) -> Html {
         })
     };
 
+    let volume_down_icon_url = platform_url("assets/icons/volume_down.svg");
+    let volume_up_icon_url = platform_url("assets/icons/volume_up.svg");
+
     html! {
         <div class="sound-range">
-            <img class="sound-range-icon-down" src="/android_asset/www/assets/icons/volume_down.svg" />
+            <img class="sound-range-icon-down" src={volume_down_icon_url} />
             <div class="range-slider">
                 <span class="available-range" />
                 <input type="range"
@@ -33,7 +38,7 @@ pub fn sound_range(props: &SoundRangeProps) -> Html {
                     value={props.value.to_string()}
                 />
             </div>
-            <img class="sound-range-icon-up" src="/android_asset/www/assets/icons/volume_up.svg" />
+            <img class="sound-range-icon-up" src={volume_up_icon_url} />
         </div>
     }
 }

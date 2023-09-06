@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::app::platform_url;
+
 #[derive(Properties, PartialEq)]
 pub struct ButtonProps {
     pub icon: String,
@@ -17,16 +19,16 @@ pub fn button(props: &ButtonProps) -> Html {
         })
     };
 
-    let icon_file = if props.in_session {
-        format!("/android_asset/www/assets/icons/{}.svg", props.alt_icon)
+    let icon_url = if props.in_session {
+        platform_url(&format!("assets/icons/{}.svg", props.alt_icon))
     } else {
-        format!("/android_asset/www/assets/icons/{}.svg", props.icon)
+        platform_url(&format!("assets/icons/{}.svg", props.icon))
     };
 
     html! {
         <button class="round-button" onclick={on_click}>
             <div class="icon-container">
-                <img class="icon" src={icon_file} />
+                <img class="icon" src={icon_url} />
             </div>
         </button>
     }

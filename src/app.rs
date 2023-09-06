@@ -136,3 +136,11 @@ fn is_android() -> bool {
         .user_agent().unwrap()
         .contains("Android")
 }
+
+fn platform_url(url: &str) -> String {
+    if is_android() {
+        format!("/android_asset/www/{url}")
+    } else {
+        format!("{url}")
+    }
+}

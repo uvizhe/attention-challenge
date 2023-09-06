@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::app::{Route, VolumeLevel};
+use crate::app::{Route, VolumeLevel, platform_url};
 use crate::app::components::sound_range::SoundRange;
 
 #[derive(Properties, PartialEq)]
@@ -35,10 +35,14 @@ pub fn settings(props: &SettingsProps) -> Html {
         VolumeLevel::Low => 1,
     };
 
+    let back_icon_url = platform_url("assets/icons/back.svg");
+
     html! {
         <>
             <header>
-                <button {onclick}>{ "Back" }</button>
+                <button {onclick}>
+                    <img src={back_icon_url} />
+                </button>
                 <h1>{ "Settings" }</h1>
             </header>
             <main>

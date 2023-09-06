@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::app::platform_url;
+
 #[derive(Properties, PartialEq)]
 pub struct MainButtonProps {
     pub in_session: bool,
@@ -28,6 +30,8 @@ pub fn main_button(props: &MainButtonProps) -> Html {
         format!("{:02}:{:02}", minutes, seconds)
     };
 
+    let icon_url = platform_url("assets/icons/play.svg");
+
     html! {
         <button class="main-button" onclick={on_click} disabled={props.in_session}>
         if props.in_session {
@@ -36,7 +40,7 @@ pub fn main_button(props: &MainButtonProps) -> Html {
             </div>
         } else {
             <div class="play-icon-container">
-                <img class="icon" src="/android_asset/www/assets/icons/play.svg" />
+                <img class="icon" src={icon_url} />
             </div>
             <div class="main-button-duration">
                 { duration() }
