@@ -81,7 +81,13 @@ strong {
   font-weight: 500;
 }
 input[type=radio] {
-  display: none;
+  appearance: none;
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  border-radius: 14px;
+  background-color: #616161;
+  box-shadow: 0px 1px 3px 0px #616161;
 }
 input[type=range] {
   -webkit-appearance: none;
@@ -106,7 +112,7 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
   position: relative;
   z-index: 1;
-  box-shadow: 0px 1px 3px 1px #616161;
+  box-shadow: 0px 1px 3px 0px #616161;
   margin-top: -1px;
 }
 input[type=range]::-moz-range-thumb {
@@ -257,9 +263,30 @@ input[type=range]::-moz-range-thumb {
   align-items: center;
   width: 100%;
 }
+.setting .hint {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
 .setting input[type=range] {
   pointer-events: revert;
   width: 100px;
+}
+.setting .controls {
+  display: flex;
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.setting .controls label {
+  margin: 3px;
+}
+.setting .controls .available-range {
+  position: absolute;
+  z-index: -1;
+  top: 12px !important;
+  left: 30%;
+  right: 30%;
+  height: 2px !important;
 }
 .sound-range {
   display: flex;

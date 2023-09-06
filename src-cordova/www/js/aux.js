@@ -30,3 +30,11 @@ export function stopForegroundService() {
 
   cordova.plugins.foregroundService.stop();
 }
+
+export function enableDNDMode() {
+  AudioManagement.setAudioMode(AudioManagement.AudioMode.SILENT, null, null);
+}
+
+export function disableDNDMode() {
+  AudioManagement.setAudioMode(AudioManagement.AudioMode.NORMAL, null, null);
+}

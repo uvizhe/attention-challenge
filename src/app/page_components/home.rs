@@ -36,6 +36,12 @@ extern "C" {
 
     #[wasm_bindgen(js_name = stopForegroundService)]
     fn stop_foreground_service();
+
+    #[wasm_bindgen(js_name = enableDNDMode)]
+    fn enable_dnd_mode();
+
+    #[wasm_bindgen(js_name = disableDNDMode)]
+    fn disable_dnd_mode();
 }
 
 // Event listeners that listen for global app events
@@ -61,6 +67,7 @@ pub enum Msg {
 #[derive(Properties, PartialEq)]
 pub struct HomeProps {
     pub volume: VolumeLevel,
+    pub dnd: bool,
 }
 
 pub struct Home {
@@ -159,6 +166,12 @@ impl Component for Home {
                     scope.send_message(Msg::ReduceTimer);
                 });
                 self.interval = Some(interval);
+
+                // Enable DND mode if necessary
+                #[cfg(cordova)]
+                if ctx.props().dnd {
+                    enable_dnd_mode();
+                }
             }
             Msg::OnHelpStopButtonPress => {
                 if self.in_session {
@@ -235,6 +248,10 @@ impl Component for Home {
                 self.in_session = false;
                 self.is_paused = false;
                 self.time_remaining = self.duration;
+
+                // Disable DND mode
+                #[cfg(cordova)]
+                disable_dnd_mode();
             }
             Msg::PlaySound(sound) => {
                 let volume = ctx.props().volume.numeric_value();

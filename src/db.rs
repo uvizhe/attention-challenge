@@ -213,6 +213,29 @@ impl Db {
             .expect("Unable to writo to LocalStorage");
     }
 
+    pub fn get_dnd_mode(&self) -> bool {
+        if let Ok(value) = self.local_storage.get_item("_config:dndMode") {
+            if let Some(mut value) = value {
+                let prefix = LegacyStorageValues::BoolValue.prefix();
+                if value.contains(prefix) {
+                    value = value.strip_prefix(prefix).unwrap().to_string();
+                    if value == "0" { false } else { true }
+                } else {
+                    serde_json::from_str(&value).unwrap()
+                }
+            } else {
+                true
+            }
+        } else {
+            true
+        }
+    }
+
+    pub fn set_dnd_mode(&self, dnd: bool) {
+        self.local_storage.set_item("_config:dndMode", &dnd.to_string())
+            .expect("Unable to writo to LocalStorage");
+    }
+
     pub fn remove_legacy_keys(&self) {
         for key in LEGACY_STORAGE_KEYS {
             self.local_storage.remove_item(key).unwrap();
@@ -259,6 +282,7 @@ struct SavedSession {
 }
 
 enum LegacyStorageValues {
+    BoolValue,
     NumberValue,
     ObjectValue,
     StringValue,
@@ -267,6 +291,7 @@ enum LegacyStorageValues {
 impl LegacyStorageValues {
     pub fn prefix(&self) -> &str {
         match self {
+            LegacyStorageValues::BoolValue => "__q_bool|",
             LegacyStorageValues::NumberValue => "__q_numb|",
             LegacyStorageValues::StringValue => "__q_strn|",
             LegacyStorageValues::ObjectValue => "__q_objt|",

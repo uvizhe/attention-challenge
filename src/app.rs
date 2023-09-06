@@ -27,11 +27,13 @@ pub enum Route {
 
 pub enum AppMsg {
     OnVolumeChange(VolumeLevel),
+    OnDNDChange(bool),
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct App {
     volume: VolumeLevel,
+    dnd: bool,
 }
 
 impl Component for App {
@@ -44,6 +46,7 @@ impl Component for App {
 
         Self {
             volume: db.get_sound_volume(),
+            dnd: db.get_dnd_mode(),
         }
     }
 
@@ -54,6 +57,11 @@ impl Component for App {
                 db.set_sound_volume(&val);
                 self.volume = val;
             }
+            AppMsg::OnDNDChange(val) => {
+                let db = Db::new();
+                db.set_dnd_mode(val);
+                self.dnd = val;
+            }
         }
         true
     }
@@ -62,10 +70,13 @@ impl Component for App {
         let switch = {
             let volume = self.volume.clone();
             let on_volume_change = ctx.link().callback(|val| AppMsg::OnVolumeChange(val));
+            let dnd = self.dnd;
+            let on_dnd_change = ctx.link().callback(|val| AppMsg::OnDNDChange(val));
+
             Callback::from(move |routes: Route| -> Html {
                 match routes {
                     Route::Home => html! {
-                        <Home {volume} />
+                        <Home {volume} {dnd} />
                     },
                     Route::About => html! {
                         <About />
@@ -74,6 +85,8 @@ impl Component for App {
                         <Settings
                             {volume}
                             on_volume_change={on_volume_change.clone()}
+                            {dnd}
+                            on_dnd_change={on_dnd_change.clone()}
                         />
                     },
                 }

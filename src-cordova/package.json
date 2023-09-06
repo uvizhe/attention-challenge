@@ -6,10 +6,12 @@
     "plugins": {
       "cordova-plugin-media": {},
       "cordova-plugin-background-mode": {},
-      "cordova-plugin-foreground-service": {}
+      "cordova-plugin-foreground-service": {},
+      "clovelced-plugin-audiomanagement": {}
     }
   },
   "devDependencies": {
+    "clovelced-plugin-audiomanagement": "^1.0.2",
     "cordova-android": "^12.0.1",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-device": "^2.1.0",
