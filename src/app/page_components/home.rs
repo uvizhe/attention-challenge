@@ -274,7 +274,7 @@ impl Component for Home {
             <main>
                 <section class="chart">
                     <SectionTitle
-                        title={"Daily Average Chart"}
+                        title={"Daily Average Score"}
                         hint={"This chart helps you assess how your attention develops"}
                     />
                     <ScoreChart avgs={self.db.get_avgs()} />
