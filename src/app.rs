@@ -1,3 +1,5 @@
+#[cfg(cordova)]
+use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -13,6 +15,16 @@ pub const INITIAL_DELAY: usize = 3 * 60;
 pub const INITIAL_DURATION: usize = 15 * 60;
 const MAX_DURATION: usize = 30 * 60;
 const MIN_ACTIVE_SESSION: usize = 5 * 60;
+
+#[cfg(cordova)]
+#[wasm_bindgen(raw_module = "/android_asset/www/js/aux.js")]
+extern "C" {
+    #[wasm_bindgen(js_name = hasDNDPermission)]
+    fn has_dnd_permission();
+
+    #[wasm_bindgen(js_name = requestDNDPermission)]
+    fn request_dnd_permission();
+}
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -30,7 +42,6 @@ pub enum AppMsg {
     OnDNDChange(bool),
 }
 
-#[derive(Clone, Debug, PartialEq)]
 pub struct App {
     volume: VolumeLevel,
     dnd: bool,

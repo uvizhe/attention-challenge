@@ -224,10 +224,10 @@ impl Db {
                     serde_json::from_str(&value).unwrap()
                 }
             } else {
-                true
+                false
             }
         } else {
-            true
+            false
         }
     }
 

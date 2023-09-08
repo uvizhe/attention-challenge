@@ -1,4 +1,11 @@
-var permissionsToRemove = [ "RECORD_AUDIO", "READ_PHONE_STATE"];
+var permissionsToRemove = [
+  "POST_NOTIFICATIONS",
+  "RECORD_AUDIO",
+  "READ_PHONE_STATE",
+  "RECEIVE_BOOT_COMPLETED",
+  "SCHEDULE_EXACT_ALARM",
+  "WRITE_EXTERNAL_STORAGE"
+];
 
 var fs = require('fs');
 var path = require('path');

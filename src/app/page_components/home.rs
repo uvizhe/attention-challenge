@@ -45,7 +45,7 @@ extern "C" {
 }
 
 // Event listeners that listen for global app events
-struct AppEventListeners {
+struct EventListeners {
     _pause: EventListener,
     _resume: EventListener,
 }
@@ -96,7 +96,7 @@ pub struct Home {
     /// Bowl sound ref
     bowl_sound: NodeRef,
     /// App global event listeners
-    _app_event_listeners: AppEventListeners,
+    _app_event_listeners: EventListeners,
 }
 
 impl Component for Home {
@@ -128,7 +128,7 @@ impl Component for Home {
             "resume",
             move |e| on_resume.emit(e.clone())
         );
-        let listeners = AppEventListeners { _pause: pause, _resume: resume };
+        let listeners = EventListeners { _pause: pause, _resume: resume };
 
         let db = Db::new();
         let delay = db.get_active_session_delay();

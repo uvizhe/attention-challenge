@@ -59,7 +59,7 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
     let star_outline_icon_url = platform_url("assets/icons/star_outline.svg");
 
     html! {
-        <div class="rating-modal" {style}>
+        <div class="modal" {style}>
             <div class="modal-content">
                 <h2>{ "Rate your session" }</h2>
                 <div class="rating">

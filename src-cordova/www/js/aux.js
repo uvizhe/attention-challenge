@@ -38,3 +38,23 @@ export function enableDNDMode() {
 export function disableDNDMode() {
   AudioManagement.setAudioMode(AudioManagement.AudioMode.NORMAL, null, null);
 }
+
+export function hasDNDPermission() {
+  cordova.plugins.notification.local.hasDoNotDisturbPermissions((granted) => {
+    if (granted) {
+      document.dispatchEvent(new Event('has_dnd_granted'));
+    } else {
+      document.dispatchEvent(new Event('has_dnd_not_granted'));
+    }
+  });
+}
+
+export function requestDNDPermission() {
+  cordova.plugins.notification.local.requestDoNotDisturbPermissions((granted) => {
+    if (granted) {
+      document.dispatchEvent(new Event('dnd_granted'));
+    } else {
+      document.dispatchEvent(new Event('dnd_not_granted'));
+    }
+  });
+}

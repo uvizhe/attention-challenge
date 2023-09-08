@@ -295,7 +295,7 @@ input[type=range]::-moz-range-thumb {
 .sound-range-icon-up, .sound-range-icon-down {
   margin-left: 3px;
 }
-.rating-modal {
+.modal {
   position: fixed;
   z-index: 1;
   left: 0;
@@ -330,6 +330,8 @@ input[type=range]::-moz-range-thumb {
   border: none;
   padding: 5px 0;
   box-shadow: none;
+  font-size: 1rem;
+  font-weight: 500;
   text-transform: uppercase;
   -webkit-tap-highlight-color: transparent;
 }
@@ -342,6 +344,9 @@ input[type=range]::-moz-range-thumb {
 .rating {
   display: flex;
   justify-content: center;
+}
+.rating input[type=radio] {
+  display: none;
 }
 .rating img {
   width: 54px;
