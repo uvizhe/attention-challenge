@@ -14,6 +14,16 @@ pub struct RatingModalProps {
 pub fn rating_modal(props: &RatingModalProps) -> Html {
     let choice = use_state(|| 0);
 
+    // Reset previously selected radio input
+    fn reset_choice(choice: UseStateHandle<usize>) {
+        let document = window().unwrap().document().unwrap();
+        if let Some(radio) = document.get_element_by_id(&format!("s{}", *choice)) {
+            let radio = radio.dyn_into::<HtmlInputElement>().unwrap();
+            radio.set_checked(false);
+        }
+        choice.set(0);
+    }
+
     let oninput = {
         let choice = choice.clone();
         Callback::from(move |e: InputEvent| {
@@ -33,16 +43,7 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
 
     let on_reset = {
         let choice = choice.clone();
-        Callback::from(move |_| {
-            // Reset previously selected radio input
-            let document = window().unwrap().document().unwrap();
-            let past_choice = *choice;
-            if let Some(radio) = document.get_element_by_id(&format!("s{past_choice}")) {
-                let radio = radio.dyn_into::<HtmlInputElement>().unwrap();
-                radio.set_checked(false);
-            }
-            choice.set(0);
-        })
+        Callback::from(move |_| reset_choice(choice.clone()))
     };
 
     let on_ok = {
@@ -50,6 +51,8 @@ pub fn rating_modal(props: &RatingModalProps) -> Html {
         let choice = choice.clone();
         Callback::from(move |_| {
             callback.emit(*choice);
+            // Reset choice for next use
+            reset_choice(choice.clone());
         })
     };
 
