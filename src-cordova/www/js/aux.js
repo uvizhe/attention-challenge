@@ -31,12 +31,22 @@ export function stopForegroundService() {
   cordova.plugins.foregroundService.stop();
 }
 
+export function getAudioMode() {
+  AudioManagement.getAudioMode((mode) => {
+    document.dispatchEvent(new CustomEvent("audiomode", { detail: mode.audioMode }));
+  });
+}
+
+export function setAudioMode(mode) {
+  AudioManagement.setAudioMode(mode);
+}
+
 export function enableDNDMode() {
   AudioManagement.setAudioMode(AudioManagement.AudioMode.SILENT, null, null);
 }
 
-export function disableDNDMode() {
-  AudioManagement.setAudioMode(AudioManagement.AudioMode.NORMAL, null, null);
+export function disableDNDMode(mode) {
+  AudioManagement.setAudioMode(mode, null, null);
 }
 
 export function hasDNDPermission() {

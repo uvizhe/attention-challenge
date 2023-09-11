@@ -19,6 +19,12 @@ const MIN_ACTIVE_SESSION: usize = 5 * 60;
 #[cfg(cordova)]
 #[wasm_bindgen(raw_module = "/android_asset/www/js/aux.js")]
 extern "C" {
+    #[wasm_bindgen(js_name = getAudioMode)]
+    fn get_audio_mode();
+
+    #[wasm_bindgen(js_name = setAudioMode)]
+    fn set_audio_mode(mode: usize);
+
     #[wasm_bindgen(js_name = hasDNDPermission)]
     fn has_dnd_permission();
 

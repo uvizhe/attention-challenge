@@ -53,6 +53,7 @@ impl Component for Settings {
     fn create(ctx: &Context<Self>) -> Self {
         let document = web_sys::window().unwrap()
             .document().unwrap();
+        // "dnd_granted" callback and event listener
         let on_dnd_granted = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {
@@ -64,6 +65,7 @@ impl Component for Settings {
             "dnd_granted",
             move |e| on_dnd_granted.emit(e.clone())
         );
+        // "dnd_not_granted" callback and event listener
         let on_dnd_not_granted = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {
@@ -75,6 +77,7 @@ impl Component for Settings {
             "dnd_not_granted",
             move |e| on_dnd_not_granted.emit(e.clone())
         );
+        // "has_dnd_granted" callback and event listener
         let on_has_dnd_granted = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {
@@ -86,6 +89,7 @@ impl Component for Settings {
             "has_dnd_granted",
             move |e| on_has_dnd_granted.emit(e.clone())
         );
+        // "has_dnd_not_granted" callback and event listener
         let on_has_dnd_not_granted = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {

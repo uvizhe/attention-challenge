@@ -3,7 +3,8 @@ use gloo_timers::callback::Interval;
 use js_sys::Date;
 #[cfg(cordova)]
 use wasm_bindgen::prelude::*;
-use web_sys::HtmlMediaElement;
+use wasm_bindgen::{closure::Closure, JsCast};
+use web_sys::{CustomEvent, HtmlMediaElement};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -12,6 +13,8 @@ use crate::app::{
     is_android, Route, Sound, VolumeLevel,
     INITIAL_DURATION, MAX_DURATION, MIN_ACTIVE_SESSION,
 };
+#[cfg(cordova)]
+use crate::app::{get_audio_mode, set_audio_mode};
 use crate::app::components::{
     button::Button,
     charts::ScoreChart,
@@ -46,11 +49,13 @@ extern "C" {
 
 // Event listeners that listen for global app events
 struct EventListeners {
+    _audiomode: Closure<dyn Fn(CustomEvent)>,
     _pause: EventListener,
     _resume: EventListener,
 }
 
 pub enum Msg {
+    OnAudioMode(usize),
     OnMainButtonPress,
     OnHelpStopButtonPress,
     OnSettingsPauseButtonPress,
@@ -95,8 +100,10 @@ pub struct Home {
     ding_sound: NodeRef,
     /// Bowl sound ref
     bowl_sound: NodeRef,
+    /// Android user audio mode
+    audio_mode: usize,
     /// App global event listeners
-    _app_event_listeners: EventListeners,
+    _event_listeners: EventListeners,
 }
 
 impl Component for Home {
@@ -106,6 +113,22 @@ impl Component for Home {
     fn create(ctx: &Context<Self>) -> Self {
         let document = web_sys::window().unwrap()
             .document().unwrap();
+        // "audiomode" callback and event listener
+        let on_audiomode = {
+            let scope = ctx.link().clone();
+            Callback::from(move |e: CustomEvent| {
+                let mode = e.detail().unchecked_into_f64() as usize;
+                scope.send_message(Msg::OnAudioMode(mode));
+            })
+        };
+        let audiomode = Closure::<dyn Fn(CustomEvent)>::wrap(
+            Box::new(move |e: CustomEvent| on_audiomode.emit(e))
+        );
+        document.add_event_listener_with_callback(
+            "audiomode",
+            audiomode.as_ref().unchecked_ref()
+        ).unwrap();
+        // "pause" callback and event listener
         let on_pause = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {
@@ -117,6 +140,7 @@ impl Component for Home {
             "pause",
             move |e| on_pause.emit(e.clone())
         );
+        // "resume" callback and event listener
         let on_resume = {
             let scope = ctx.link().clone();
             Callback::from(move |_: Event| {
@@ -128,7 +152,11 @@ impl Component for Home {
             "resume",
             move |e| on_resume.emit(e.clone())
         );
-        let listeners = EventListeners { _pause: pause, _resume: resume };
+        let listeners = EventListeners {
+            _audiomode: audiomode,
+            _pause: pause,
+            _resume: resume,
+        };
 
         let db = Db::new();
         let delay = db.get_active_session_delay();
@@ -147,12 +175,16 @@ impl Component for Home {
             rating_modal: false,
             ding_sound: NodeRef::default(),
             bowl_sound: NodeRef::default(),
-            _app_event_listeners: listeners,
+            audio_mode: 0,
+            _event_listeners: listeners,
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
+            Msg::OnAudioMode(val) => {
+                self.audio_mode = val;
+            }
             Msg::OnMainButtonPress => {
                 // Register session start time
                 self.session_date = Some(Date::new_0());
@@ -170,6 +202,9 @@ impl Component for Home {
                 // Enable DND mode if necessary
                 #[cfg(cordova)]
                 if ctx.props().dnd {
+                    // Remember present audio mode
+                    get_audio_mode();
+
                     enable_dnd_mode();
                 }
             }
@@ -251,7 +286,10 @@ impl Component for Home {
 
                 // Disable DND mode
                 #[cfg(cordova)]
-                disable_dnd_mode();
+                if ctx.props().dnd {
+                    disable_dnd_mode();
+                    set_audio_mode(self.audio_mode);
+                }
             }
             Msg::PlaySound(sound) => {
                 let volume = ctx.props().volume.numeric_value();

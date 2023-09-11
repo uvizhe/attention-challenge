@@ -33,6 +33,7 @@ features = ["line_series", "svg_backend"]
 [dependencies.web-sys]
 version = "0.3"
 features = [
+    "CustomEvent",
     "HtmlDivElement",
     "HtmlMediaElement",
     "Navigator",
