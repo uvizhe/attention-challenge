@@ -258,8 +258,8 @@ impl Session {
         }
     }
 
-    pub fn ts(&self) -> usize {
-        (self.date.get_time() / 1000.0) as usize
+    pub fn ts(&self) -> String {
+        ((self.date.get_time() / 1000.0) as usize).to_string()
     }
 
     pub fn date(&self) -> String {
@@ -276,7 +276,7 @@ impl Session {
 #[derive(Deserialize, Serialize, Debug)]
 struct SavedSession {
     date: String,
-    ts: usize,
+    ts: String,
     duration: usize,
     score: usize,
 }
