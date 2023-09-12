@@ -27,7 +27,7 @@ serde_json = "1.0"
 
 [dependencies.plotters]
 version = "0.3"
-default_features = false
+default-features = false
 features = ["line_series", "svg_backend"]
 
 [dependencies.web-sys]
